@@ -1,0 +1,7 @@
+Dependencies:
+freeglut3-dev
+mesa-common-dev
+libwxgtk3.0-dev
+g++
+cmake
+libxmu-dev
