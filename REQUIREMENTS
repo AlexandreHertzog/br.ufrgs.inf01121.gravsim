@@ -1,0 +1,59 @@
+Legend:
+* Big topic
+- Subtopic
++ Purposed solution
+
+Requirements for the implementation:
+* Classes.
+  + Since classes will be used to everything, this one is fine.
+* Attributes protection:
+  usage of private or protected atributes, with access functions.
+* Default constructors:
+  - Create a constructor that takes few parameters and provide default
+  values for internal variables.
+  + Any class that needes new for members, must do it in its
+    constructor. Eventually, we'll have a class that doesn't need
+    parameters.
+* Destructors:
+  - Deletion of new'ed variables.
+  + Any class that needs delete for members, must do it in its 
+    destructor.
+* Use namespaces:
+  - Separation of namespaces that specify functionality inside the
+  program.
+  + Each functionality of the program will be inside its namespace: gui,
+    engine, physics...
+* Hereditage:
+  - At least three levels of hierarchy.
+  + No ideas on that one. Maybe specify classes for planets that derive
+    from the base particle class? Since the work is also about magnetic
+    fields and whatnot, we could also create derived classes that
+    implement protons and electrons.
+  - At least one abstract class, that must be implemented in derived
+    classes.
+  + Some interface of sorts. No idea here as well.
+  - Inclusion polimorfism: functions or functionalities that use
+    attributes of base classes.
+  + Some function that accepts the base particle class that computes the
+    gravitational or magnetic pull.
+* Parametric polimorfism: templates.
+  + No idea here.
+* Overload polimorfism: function and constructor overloading.
+  + This one is easy. Eventually we'll find a use for it.
+* Functions as first order elements and High-Order functions:
+  - Revise the concepts.
+  + No idea at all.
+* Lists that modify high-order functions and elements.
+  + Nope.
+* Lambda functions.
+  + The main calculations of forces can be done by lambda functions.
+* Currying.
+  + We could create a general log message function and 'curry' it to
+    generate errors, warnings, infos...
+* Pattern matching functions (on their definitions).
+  + No idea.
+* Recursion as iteration.
+  + The main loop that cycles through all the particles could be
+    recursive. That would be hell though.
+* Delegates
+  + I don't really know what delegates are in C++ context.
