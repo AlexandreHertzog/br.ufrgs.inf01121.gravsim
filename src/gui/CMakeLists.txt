@@ -9,5 +9,4 @@ include_directories(${GLUT_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${GLUT_LIBRARIES})
 
 add_library(gui canvas.cc window.cc)
-set(LIBS ${LIBS})
 target_link_libraries(gui GL ${LIBS})
