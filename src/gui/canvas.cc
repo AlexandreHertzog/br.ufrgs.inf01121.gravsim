@@ -24,6 +24,12 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
   EVT_PAINT      (Canvas::OnRender)
 END_EVENT_TABLE()
 
+/* Unfortunately, this is necessary. g++ points out many warning about internal
+ * wxGLCanvas functions that are never used in our program, which causes a lot
+ * of clutter in the terminal. This fixes the problem, though we may not know if
+ * or when we'll use a deprecated function. */
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 Canvas::Canvas(wxFrame *parent)
   : wxGLCanvas(
     parent, wxID_ANY, NULL, wxDefaultPosition, wxDefaultSize, 0, wxT(
@@ -117,3 +123,4 @@ void Canvas::PrepareViewport(int width, int height) {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
+
