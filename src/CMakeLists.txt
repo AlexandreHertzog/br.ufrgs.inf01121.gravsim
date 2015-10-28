@@ -2,7 +2,7 @@ project(GravSim)
 cmake_minimum_required(VERSION 3.0)
 
 # Debug flags
-set(_AUTONEWPARTS_ 1)
+set(_TEST_RENDER_ 1)
 
 # System libraries and includes.
 find_package(wxWidgets COMPONENTS core base REQUIRED)

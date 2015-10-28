@@ -1,23 +1,28 @@
+#include "point.hh"
+
 namespace GravSim {
 namespace Assets {
+// TODO: move this somewhere else.
 const int NUM_DIMENSIONS = 2;
 
 /* 'Particle' defines the base class for a particle. There are plans to derive
  * it in the following classes:
  * A class that represents a planet
  * A class that represents an electrically charged element. */
-class Particle {
+class Particle : GravSim::Gui::Point {
 public:
   // Constructors and destructor.
-  Particle(const double mass, const double *velocity, const double *position);
-  Particle(void);
+  Particle(
+    // Physical components
+    const double mass, const double *velocity, 
+    // Render components
+    const double *position, const size_t size = 0
+  );
   ~Particle(void);
 
   // Access functions
   // Getters
   double GetMass(void);
-  void   LoadVel(double *out);
-  void   LoadPos(double *out);
   // There are no setters.
   
   /* This function will input a force in the particle. This force value won't
@@ -32,7 +37,6 @@ public:
 private:
   double _mass;
   double _velocity[NUM_DIMENSIONS];
-  double _position[NUM_DIMENSIONS];
 }; // class Particle
 }; // namespace GravSim
 }; // namespace Assets
