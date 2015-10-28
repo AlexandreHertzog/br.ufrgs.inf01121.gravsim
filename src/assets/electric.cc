@@ -2,7 +2,12 @@
 
 using namespace GravSim::Assets;
 
-Electric::Electric(double charge) {
+Electric::Electric(
+  const double charge, const double mass, const double *velocity, 
+  const double *position, const size_t size
+)
+  : Particle(mass, velocity, position, size)
+{
   _charge = charge;
 }
 

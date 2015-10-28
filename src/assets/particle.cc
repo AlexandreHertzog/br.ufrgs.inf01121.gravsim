@@ -4,30 +4,23 @@
 
 using namespace GravSim::Assets;
 
-Particle::Particle(void) {
-}
-
-Particle::Particle(
-  const double mass, const double *velocity, const double *position
-) {
+Particle::Particle
+(
+  const double mass, const double *velocity, const double *position,
+  const size_t size
+)
+  : Point(position, size)
+{
   _mass = mass;
-  std::copy(position, position + NUM_DIMENSIONS, _position);
   std::copy(velocity, velocity + NUM_DIMENSIONS, _velocity);
 }
 
-Particle::~Particle(void) {
+Particle::~Particle(void)
+{
 }
 
 double Particle::GetMass(void) {
   return _mass;
-}
-
-void Particle::LoadPos(double *out) {
-  std::copy(_position, _position + NUM_DIMENSIONS, out);
-}
-
-void Particle::LoadVel(double *out) {
-  std::copy(_velocity, _velocity + NUM_DIMENSIONS, out);
 }
 
 void Particle::ApplyForce(const double *force) {
@@ -44,7 +37,5 @@ void Particle::ApplyForce(const double *force) {
 }
 
 void Particle::StepPosition(void) {
-  for (int i = 0; i < NUM_DIMENSIONS; i++) {
-    _position[i] += _velocity[i];
-  }
+  IncrementPosition(_velocity);
 }

@@ -12,10 +12,6 @@
 #include <GL/gl.h>
 #endif
 
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
 #include "cmake_defines.hh"
 
 using namespace GravSim::Gui;
@@ -24,8 +20,8 @@ BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
   EVT_PAINT      (Canvas::OnRender)
 END_EVENT_TABLE()
 
-/* Unfortunately, this is necessary. g++ points out many warning about internal
- * wxGLCanvas functions that are never used in our program, which causes a lot
+/* Unfortunately, this is necessary. g++ points out many warnings about internal
+ * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -43,19 +39,11 @@ Canvas::Canvas(wxFrame *parent)
   _glcontext = new wxGLContext(this);
   glClearColor(0.0, 0.0, 0.0, 0.0);
   
-  // If we are in auto create particles mode, create some particles here.
-  #ifdef _AUTONEWPARTS_
-  double position[GravSim::Assets::NUM_DIMENSIONS];
-  double velocity[GravSim::Assets::NUM_DIMENSIONS];
-  velocity[0] = 0.0;
-  velocity[1] = 0.0;
+  // If we are in auto create points mode, create some points here.
+  #ifdef _TEST_RENDER_
   for (int i = 0; i < 50; i++) {
-    position[0] = double(2 * i);
-    position[1] = double(i);
-    GravSim::Assets::Particle * particle = new GravSim::Assets::Particle(
-      0.0, velocity, position
-    );
-    _particles.push_back(particle);
+    Point * point = new Point(2 * i, i, 10);
+    AddPoint(point);
   }
   #endif
 }
@@ -63,19 +51,14 @@ Canvas::Canvas(wxFrame *parent)
 Canvas::~Canvas(void) {
   delete _glcontext;
   #ifdef _AUTONEWPARTS_
-  for(auto particle : _particles) {
-    delete particle;
+  for(auto point : _points) {
+    delete point;
   }
   #endif
 }
 
-void Canvas::AddParticle(GravSim::Assets::Particle *particle) {
-  #ifndef _AUTONEWPARTS_
-  _particles.push_back(particle);
-  #else
-  std::cout << "GravSim::Gui::Canvas::AddParticle : Not adding new particle "
-    "since we are in auto create particle mode." << std::endl;
-  #endif
+void Canvas::AddPoint(Point *point) {
+  _points.push_back(point);
 }
 
 void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
@@ -90,18 +73,9 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
   PrepareViewport(GetSize().x, GetSize().y);
   glLoadIdentity();
   
-  // A single area in memory will be reused for all points.
-  double current_point[GravSim::Assets::NUM_DIMENSIONS];
-  
-  // TODO: get this as an attribute from the particle.
-  glPointSize(10);
-  
-  glBegin(GL_POINTS);
-  for (auto particle : _particles) {
-    particle->LoadPos(current_point);
-    glVertex3f(current_point[0]*10, current_point[1]*10, 0);
+  for (auto point : _points) {
+    point->Draw();
   }
-  glEnd();
   
   glFlush();
   SwapBuffers();

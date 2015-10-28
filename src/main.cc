@@ -2,8 +2,8 @@
 
 #include "window.hh"
 
-/* Unfortunately, this is necessary. g++ points out many warning about internal
- * wxGLCanvas functions that are never used in our program, which causes a lot
+/* Unfortunately, this is necessary. g++ points out many warnings about internal
+ * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"

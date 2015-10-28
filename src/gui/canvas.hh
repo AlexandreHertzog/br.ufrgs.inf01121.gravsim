@@ -2,10 +2,9 @@
 
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
-
 #include <vector>
 
-#include "particle.hh"
+#include "point.hh"
 
 namespace GravSim {
 namespace Gui {
@@ -15,7 +14,7 @@ public:
   ~Canvas(void);
   
   // This function does nothing if we are in _AUTONEWPARTS_ mode.
-  void AddParticle(GravSim::Assets::Particle *particle);
+  void AddPoint(Point *point);
   
 private:
   DECLARE_EVENT_TABLE()
@@ -24,7 +23,7 @@ private:
   
   // Private variables.
   wxGLContext *_glcontext;
-  std::vector<GravSim::Assets::Particle *> _particles;
+  std::vector<Point *> _points;
 }; // class Canvas
 }; // namespace Gui
 }; // namespace GravSim

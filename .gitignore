@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+
+# Everything below ./bin
+bin/*
