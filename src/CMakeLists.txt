@@ -16,3 +16,4 @@ set(LIBS ${LIBS} assets)
 
 add_executable(${PROJECT_NAME} main.cc)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
+set_property(TARGET GravSim PROPERTY CXX_STANDARD 11)
