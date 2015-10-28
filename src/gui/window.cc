@@ -1,6 +1,8 @@
-#include "window.h"
+#include "window.hh"
 
-GravSimGui::Window::Window(const wxString &title)
+using namespace GravSim;
+
+Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(280, 180))
 {
   // Alloc everything.
@@ -30,14 +32,14 @@ GravSimGui::Window::Window(const wxString &title)
   Centre();
 }
 
-void GravSimGui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
+void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   
 }
 
-void GravSimGui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
+void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
   
 }
 
-void GravSimGui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
+void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
   Close(true);
 }

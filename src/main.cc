@@ -1,11 +1,11 @@
 #include "main.h"
 
-#include "window.h"
+#include "window.hh"
 
 IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
-  GravSimGui::Window *win = new GravSimGui::Window(wxT(
+  GravSim::Gui::Window *win = new GravSim::Gui::Window(wxT(
     "Simulador Gravitacional"
   ));
   win->Show(true);

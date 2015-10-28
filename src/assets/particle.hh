@@ -5,19 +5,19 @@ const int NUM_DIMENSIONS = 2;
 /* 'Particle' defines the base class for a particle. There are plans to derive
  * it in the following classes:
  * A class that represents a planet
- * A class that represents an electrally charged element. */
+ * A class that represents an electrically charged element. */
 class Particle {
 public:
   // Constructors and destructor.
-  Particle(const double mass, const double *vel, const double *pos);
+  Particle(const double mass, const double *velocity, const double *position);
   Particle(void);
   ~Particle(void);
 
   // Access functions
   // Getters
   double GetMass(void);
-  void   GetVel(double *out);
-  void   GetPos(double *out);
+  void   LoadVel(double *out);
+  void   LoadPos(double *out);
   // There are no setters.
   
   /* This function will input a force in the particle. This force value won't
@@ -30,10 +30,9 @@ public:
   void StepPosition(void);
 
 private:
-  // Physical components.
   double _mass;
-  double _vel[NUM_DIMENSIONS];
-  double _pos[NUM_DIMENSIONS];
+  double _velocity[NUM_DIMENSIONS];
+  double _position[NUM_DIMENSIONS];
 }; // class Particle
 }; // namespace GravSim
 }; // namespace Assets

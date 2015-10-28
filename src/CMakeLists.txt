@@ -1,6 +1,9 @@
 project(GravSim)
 cmake_minimum_required(VERSION 3.0)
 
+# Debug flags
+set(_AUTONEWPARTS_ 1)
+
 # System libraries and includes.
 find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
@@ -14,6 +17,15 @@ add_subdirectory(assets)
 set(LIBS ${LIBS} gui)
 set(LIBS ${LIBS} assets)
 
+# CMake-to-code configuration file
+configure_file(
+  "${PROJECT_SOURCE_DIR}/cmake_defines.hh.in"
+  "${PROJECT_BINARY_DIR}/cmake_defines.hh"
+)
+
+include_directories("${PROJECT_BINARY_DIR}")
+
+# The wrap-up stuff
 add_executable(${PROJECT_NAME} main.cc)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 set_property(TARGET GravSim PROPERTY CXX_STANDARD 11)

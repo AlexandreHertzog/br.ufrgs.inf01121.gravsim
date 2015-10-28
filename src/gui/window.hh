@@ -3,9 +3,10 @@
 #include <wx/wx.h>
 #include <wx/menu.h>
 
-#include "canvas.h"
+#include "canvas.hh"
 
-namespace GravSimGui {
+namespace GravSim{
+namespace Gui {
 class Window : public wxFrame {
 public:
   // Constructor and destructor.
@@ -25,5 +26,6 @@ private:
   // Canvas is the middle class between the interface and the OpenGL
   // canvas.
   Canvas    *canvas;
-};
-};
+}; // class Window
+}; // namespace Gui
+}; // namespace GravSim

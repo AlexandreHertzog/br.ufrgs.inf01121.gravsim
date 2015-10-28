@@ -1,3 +1,6 @@
+# For the debug flags.
+include_directories("${PROJECT_BINARY_DIR}")
+
 # wxWidgets libraries and includes.
 find_package(wxWidgets COMPONENTS core base gl REQUIRED)
 include(${wxWidgets_USE_FILE})
