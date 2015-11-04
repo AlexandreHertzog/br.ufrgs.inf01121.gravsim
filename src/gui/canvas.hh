@@ -5,16 +5,14 @@
 #include <vector>
 
 #include "point.hh"
+#include "storage.hh"
 
 namespace GravSim {
 namespace Gui {
 class Canvas : public wxGLCanvas {
 public:
-  Canvas(wxFrame *parent);
+  Canvas(const GravSim::Engine::Storage *storage, wxFrame *parent);
   ~Canvas(void);
-  
-  // This function does nothing if we are in _AUTONEWPARTS_ mode.
-  void AddPoint(Point *point);
   
 private:
   DECLARE_EVENT_TABLE()
@@ -23,7 +21,7 @@ private:
   
   // Private variables.
   wxGLContext *_glcontext;
-  std::vector<Point *> _points;
+  const GravSim::Engine::Storage *_storage;
 }; // class Canvas
 }; // namespace Gui
 }; // namespace GravSim

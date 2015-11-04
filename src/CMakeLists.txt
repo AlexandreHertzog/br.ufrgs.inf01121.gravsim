@@ -12,10 +12,13 @@ set(LIBS ${LIBS} ${wxWidgets_LIBRARIES})
 # Local includes.
 include_directories("${PROJECT_SOURCE_DIR}/gui")
 include_directories("${PROJECT_SOURCE_DIR}/assets")
+include_directories("${PROJECT_SOURCE_DIR}/engine")
 add_subdirectory(gui)
 add_subdirectory(assets)
+add_subdirectory(engine)
 set(LIBS ${LIBS} gui)
 set(LIBS ${LIBS} assets)
+set(LIBS ${LIBS} engine)
 
 # CMake-to-code configuration file
 configure_file(

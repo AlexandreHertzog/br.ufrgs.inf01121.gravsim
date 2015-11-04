@@ -1,3 +1,6 @@
+#ifndef _POINT_H_
+#define _POINT_H_
+
 #include <cstddef>
 
 namespace GravSim {
@@ -24,3 +27,6 @@ private:
 }; // class Point
 }; // namespace Gui
 }; // namespace GravSim
+
+#endif
+

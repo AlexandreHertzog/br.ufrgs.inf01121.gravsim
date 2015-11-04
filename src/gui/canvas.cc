@@ -26,7 +26,7 @@ END_EVENT_TABLE()
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-Canvas::Canvas(wxFrame *parent)
+Canvas::Canvas(const GravSim::Engine::Storage *storage, wxFrame *parent)
   : wxGLCanvas(
     parent, wxID_ANY, NULL, wxDefaultPosition, wxDefaultSize, 0, wxT(
       "Canvas"
@@ -38,27 +38,12 @@ Canvas::Canvas(wxFrame *parent)
   
   _glcontext = new wxGLContext(this);
   glClearColor(0.0, 0.0, 0.0, 0.0);
-  
-  // If we are in auto create points mode, create some points here.
-  #ifdef _TEST_RENDER_
-  for (int i = 0; i < 50; i++) {
-    Point * point = new Point(2 * i, i, 10);
-    AddPoint(point);
-  }
-  #endif
+
+  _storage = storage;
 }
 
 Canvas::~Canvas(void) {
   delete _glcontext;
-  #ifdef _AUTONEWPARTS_
-  for(auto point : _points) {
-    delete point;
-  }
-  #endif
-}
-
-void Canvas::AddPoint(Point *point) {
-  _points.push_back(point);
 }
 
 void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
@@ -72,9 +57,12 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   PrepareViewport(GetSize().x, GetSize().y);
   glLoadIdentity();
-  
-  for (auto point : _points) {
+
+  std::shared_ptr<Point> point;
+  size_t i = 0;
+  while((point = _storage->GetPoint(i)) != NULL) {
     point->Draw();
+    i++;
   }
   
   glFlush();
@@ -93,7 +81,8 @@ void Canvas::PrepareViewport(int width, int height) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   
-  gluOrtho2D(0, width, height, 0);
+  // TODO: Maybe change these constant values in the future.
+  gluOrtho2D(0, 200, 200, 0);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }

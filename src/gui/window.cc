@@ -8,22 +8,38 @@
 
 using namespace GravSim;
 
-Gui::Window::Window(const wxString &title)
-  : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(280, 180))
+Gui::Window::Window(
+  const GravSim::Engine::Storage *storage, const wxString &title
+)
+  : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
 {
   // Alloc everything.
-  menubar  = new wxMenuBar;
-  filemenu = new wxMenu;
-  canvas   = new Canvas(this);
+  _menubar   = new wxMenuBar;
+  _filemenu  = new wxMenu;
+  _editmenu  = new wxMenu;
+  _simmenu   = new wxMenu;
+  _canvas    = new Canvas(storage, this);
+  //_statusbar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusbar"));
   
   // Append the commands to the "File" menu.
-  filemenu->Append(wxID_NEW, wxT("&Novo"));
-  filemenu->Append(wxID_OPEN, wxT("&Abrir"));
-  filemenu->Append(wxID_EXIT, wxT("&Sair"));
+  _filemenu->Append(wxID_NEW, wxT("&Novo"));
+  _filemenu->Append(wxID_OPEN, wxT("&Abrir"));
+  _filemenu->Append(wxID_EXIT, wxT("&Sair"));
+  
+  // Append the commands to the "Edit" menu
+  _editmenu->Append(ID_ADD_PART, wxT("&Adicionar partícula"));
+  
+  // Append the commands to the "Simulation" menu
+  _simmenu->Append(ID_PAUSE, wxT("&Pausar"));
+  _simmenu->Append(ID_RESUME, wxT("&Continuar"));
+  _simmenu->Append(ID_STOP, wxT("Pa&rar"));
+  _simmenu->Append(ID_STEP, wxT("Pa&sso"));
   
   // Append the menus to the 'menubar'.
-  menubar->Append(filemenu, wxT("&Arquivo"));
-  SetMenuBar(menubar);
+  _menubar->Append(_filemenu, wxT("&Arquivo"));
+  _menubar->Append(_editmenu, wxT("&Editar"));
+  _menubar->Append(_simmenu, wxT("&Simulação"));
+  SetMenuBar(_menubar);
   
   // Connect everything.
   Connect(wxID_NEW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
@@ -35,7 +51,29 @@ Gui::Window::Window(const wxString &title)
   Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnQuit
   ));
+  
+  Connect(ID_ADD_PART, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnAddParticle
+  ));
+
+  Connect(ID_RESUME, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnResume
+  ));
+  Connect(ID_STOP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnStop
+  ));
+  Connect(ID_STEP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnStep
+  ));
+  Connect(wxID_NEW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnNew
+  ));
+
   Centre();
+}
+
+void Gui::Window::SetText(const wxString string) {
+  //_statusbar->SetStatusText(string);
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
@@ -48,4 +86,19 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
 
 void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
   Close(true);
+}
+
+void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
+}
+
+void Gui::Window::OnPause(wxCommandEvent & WXUNUSED(event)) {
+}
+
+void Gui::Window::OnResume(wxCommandEvent &WXUNUSED(event)) {
+}
+
+void Gui::Window::OnStop(wxCommandEvent &WXUNUSED(event)) {
+}
+
+void Gui::Window::OnStep(wxCommandEvent &WXUNUSED(event)) {
 }

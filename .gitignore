@@ -26,6 +26,8 @@
 *.exe
 *.out
 *.app
+# Backups
+*~
 
 # Everything below ./bin
 bin/*

@@ -17,6 +17,9 @@ set(LIBS ${LIBS} ${GLUT_LIBRARY})
 # All OpenGL includes.
 include_directories(${GLUT_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 
+# Engine includes.
+include_directories("${PROJECT_SOURCE_DIR}/engine")
+
 add_library(gui canvas.cc window.cc point.cc)
 target_link_libraries(gui ${LIBS})
 set_property(TARGET gui PROPERTY CXX_STANDARD 11)

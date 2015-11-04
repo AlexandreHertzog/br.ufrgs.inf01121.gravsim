@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "window.hh"
+#include "storage.hh"
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -11,7 +12,13 @@
 IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
-  GravSim::Gui::Window *win = new GravSim::Gui::Window(wxT(
+#ifdef _TEST_RENDER_
+  GravSim::Engine::Storage *storage = new GravSim::Engine::Storage();
+#else
+  // TODO: change this to support file loading.
+  GravSim::Engine::Storage *storage = new GravSim::Engine::Storage();
+#endif
+  GravSim::Gui::Window *win = new GravSim::Gui::Window(storage, wxT(
     "Simulador Gravitacional"
   ));
   win->Show(true);
