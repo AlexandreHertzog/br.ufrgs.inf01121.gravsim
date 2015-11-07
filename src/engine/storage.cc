@@ -9,14 +9,10 @@ using namespace GravSim::Engine;
 using namespace GravSim::Gui;
 
 Storage::Storage(const std::string filename, const int num_points) {
-  if (LoadPointsFromFile(filename) == 0) {
-    GenerateRandom(num_points);
-  }
   _filename = filename;
 }
 
 Storage::~Storage(void) {
-  SavePointsToFile();
 }
 
 std::shared_ptr<Point> Storage::GetPoint(const size_t index) const {
@@ -45,6 +41,7 @@ size_t Storage::SavePointsToFile(const std::string filename) {
   }
   std::cout << "Storage::SavePointsToFile : Saved " << count <<
     " points to file." << std::endl;
+  outfile.close();
   return count;
 }
 
@@ -55,6 +52,7 @@ size_t Storage::LoadPointsFromFile(const std::string filename) {
   std::ifstream infile(_filename);
   // First, check if file exists.
   if (!infile.good()) {
+    infile.close();
     return 0;
   }
 
@@ -62,9 +60,12 @@ size_t Storage::LoadPointsFromFile(const std::string filename) {
   infile.seekg(0, std::ios::end);
   size_t len = infile.tellg();
   if (len == 0) {
+    infile.close();
     return 0;
   }
   infile.seekg(0);
+
+  _points.clear();
 
   size_t count = 0;
   double buffer[10];
@@ -79,6 +80,7 @@ size_t Storage::LoadPointsFromFile(const std::string filename) {
   }
   std::cout << "Storage::LoadPointsFromFile : Loaded " << count <<
     " points from file." << std::endl;
+  infile.close();
   return count;
 }
 
@@ -93,6 +95,10 @@ void Storage::GenerateRandom(const size_t num_points) {
     std::shared_ptr<Point> point(new Point(distr(gen), distr(gen), 10));
     AppendPoint(point);
   }
+}
+
+std::string Storage::GetFilename(void) const {
+  return _filename;
 }
 
 size_t Storage::ReadDoubles(const std::string line, double *out) {

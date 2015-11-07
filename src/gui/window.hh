@@ -12,11 +12,14 @@
 namespace GravSim{
 namespace Gui {
 
-const int ID_ADD_PART = 0;
-const int ID_PAUSE = 1;
-const int ID_RESUME = 2;
-const int ID_STOP = 3;
-const int ID_STEP = 4;
+enum {
+	ID_SAVE_AS,
+	ID_ADD_PART,
+	ID_PAUSE,
+	ID_RESUME,
+	ID_STOP,
+	ID_STEP
+};
 
 class Window : public wxFrame {
 public:
@@ -29,6 +32,8 @@ private:
   // Connection functions.
   void OnQuit(wxCommandEvent &event);
   void OnNew(wxCommandEvent &event);
+  void OnSave(wxCommandEvent &event);
+  void OnSaveAs(wxCommandEvent &event);
   void OnOpen(wxCommandEvent &event);
   
   void OnAddParticle(wxCommandEvent &event);

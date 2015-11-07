@@ -22,6 +22,8 @@ public:
   size_t LoadPointsFromFile(const std::string filename = "");
   void GenerateRandom(const size_t num_points);
 
+  std::string GetFilename(void) const;
+
 private:
   std::vector<std::shared_ptr<GravSim::Gui::Point>> _points;
   size_t _iterator;
