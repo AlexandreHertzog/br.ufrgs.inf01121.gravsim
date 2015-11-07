@@ -9,7 +9,7 @@
 using namespace GravSim;
 
 Gui::Window::Window(
-  const GravSim::Engine::Storage *storage, const wxString &title
+  std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title
 )
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
 {
@@ -69,7 +69,18 @@ Gui::Window::Window(
     Window::OnNew
   ));
 
+  _storage = storage;
+
   Centre();
+}
+
+Gui::Window::~Window(void) {
+  delete _canvas;
+  // Well, we can't really delete anything from wx unless we want segfaults.
+  //delete _simmenu;
+  //delete _editmenu;
+  //delete _filemenu;
+  //delete _menubar;
 }
 
 void Gui::Window::SetText(const wxString string) {
@@ -77,7 +88,9 @@ void Gui::Window::SetText(const wxString string) {
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
-  
+  // TODO: parametrize this.
+  _storage->GenerateRandom(100);
+  _canvas->Refresh();
 }
 
 void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {

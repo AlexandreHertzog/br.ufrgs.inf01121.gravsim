@@ -29,6 +29,7 @@ configure_file(
 include_directories("${PROJECT_BINARY_DIR}")
 
 # The wrap-up stuff
+set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} main.cc)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 set_property(TARGET GravSim PROPERTY CXX_STANDARD 11)

@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 #include <vector>
+#include <memory>
 
 #include "point.hh"
 #include "storage.hh"
@@ -11,7 +12,7 @@ namespace GravSim {
 namespace Gui {
 class Canvas : public wxGLCanvas {
 public:
-  Canvas(const GravSim::Engine::Storage *storage, wxFrame *parent);
+  Canvas(std::shared_ptr<GravSim::Engine::Storage> storage, wxFrame *parent);
   ~Canvas(void);
   
 private:
@@ -21,7 +22,7 @@ private:
   
   // Private variables.
   wxGLContext *_glcontext;
-  const GravSim::Engine::Storage *_storage;
+  std::shared_ptr<GravSim::Engine::Storage> _storage;
 }; // class Canvas
 }; // namespace Gui
 }; // namespace GravSim

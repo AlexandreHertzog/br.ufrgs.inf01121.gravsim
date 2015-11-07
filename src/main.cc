@@ -1,5 +1,7 @@
 #include "main.h"
 
+#include <memory>
+
 #include "window.hh"
 #include "storage.hh"
 
@@ -13,15 +15,18 @@ IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
 #ifdef _TEST_RENDER_
-  GravSim::Engine::Storage *storage = new GravSim::Engine::Storage();
+  std::unique_ptr<GravSim::Engine::Storage> storage(
+    new GravSim::Engine::Storage()
+  );
 #else
   // TODO: change this to support file loading.
-  GravSim::Engine::Storage *storage = new GravSim::Engine::Storage();
+  std::unique_ptr<GravSim::Engine::Storage> storage(
+    new GravSim::Engine::Storage()
+  );
 #endif
-  GravSim::Gui::Window *win = new GravSim::Gui::Window(storage, wxT(
+  GravSim::Gui::Window *win = new GravSim::Gui::Window(std::move(storage), wxT(
     "Simulador Gravitacional"
   ));
   win->Show(true);
-  
   return true;
 }

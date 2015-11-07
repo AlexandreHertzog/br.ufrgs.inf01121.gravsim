@@ -4,6 +4,8 @@
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 
+#include <memory>
+
 #include "canvas.hh"
 #include "storage.hh"
 
@@ -19,7 +21,8 @@ const int ID_STEP = 4;
 class Window : public wxFrame {
 public:
   // Constructor and destructor.
-  Window(const GravSim::Engine::Storage *storage, const wxString &title);
+  Window(std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title);
+  ~Window(void);
   void SetText(const wxString string);
 
 private:
@@ -44,6 +47,8 @@ private:
   wxMenu    *_simmenu;
   // Canvas is the middle class between the interface and the OpenGL canvas.
   Canvas    *_canvas;
+
+  std::shared_ptr<GravSim::Engine::Storage> _storage;
   
   //wxStatusBar *_statusbar;
 }; // class Window

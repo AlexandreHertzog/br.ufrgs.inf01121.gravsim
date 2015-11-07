@@ -26,7 +26,9 @@ END_EVENT_TABLE()
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-Canvas::Canvas(const GravSim::Engine::Storage *storage, wxFrame *parent)
+Canvas::Canvas(
+  std::shared_ptr<GravSim::Engine::Storage> storage, wxFrame *parent
+)
   : wxGLCanvas(
     parent, wxID_ANY, NULL, wxDefaultPosition, wxDefaultSize, 0, wxT(
       "Canvas"

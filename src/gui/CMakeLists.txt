@@ -20,6 +20,7 @@ include_directories(${GLUT_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 # Engine includes.
 include_directories("${PROJECT_SOURCE_DIR}/engine")
 
+set(CMAKE_BUILD_TYPE Debug)
 add_library(gui canvas.cc window.cc point.cc)
 target_link_libraries(gui ${LIBS})
 set_property(TARGET gui PROPERTY CXX_STANDARD 11)
