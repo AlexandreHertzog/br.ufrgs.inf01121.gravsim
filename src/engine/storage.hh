@@ -7,10 +7,11 @@
 #include <string>
 
 #include "point.hh"
+#include "gsobject.hh"
 
 namespace GravSim {
 namespace Engine {
-class Storage {
+class Storage : public GSObject {
 public:
   Storage(const std::string filename = "default.gsim", const int num_points = 50);
   ~Storage(void);
@@ -23,6 +24,9 @@ public:
   void GenerateRandom(const size_t num_points);
 
   std::string GetFilename(void) const;
+
+  // Parent functions
+  const std::string GetObjName(void) const;
 
 private:
   std::vector<std::shared_ptr<GravSim::Gui::Point>> _points;

@@ -5,6 +5,8 @@
 #include <fstream> // File management.
 #include <iostream>
 
+#include "logger.hh"
+
 using namespace GravSim::Engine;
 using namespace GravSim::Gui;
 
@@ -39,8 +41,7 @@ size_t Storage::SavePointsToFile(const std::string filename) {
     outfile << std::endl;
     count++;
   }
-  std::cout << "Storage::SavePointsToFile : Saved " << count <<
-    " points to file." << std::endl;
+  Logger::LogInfo(this, "Saved points to file.");
   outfile.close();
   return count;
 }
@@ -99,6 +100,10 @@ void Storage::GenerateRandom(const size_t num_points) {
 
 std::string Storage::GetFilename(void) const {
   return _filename;
+}
+
+const std::string Storage::GetObjName(void) const {
+	return "GravSim::Engine::Storage";
 }
 
 size_t Storage::ReadDoubles(const std::string line, double *out) {
