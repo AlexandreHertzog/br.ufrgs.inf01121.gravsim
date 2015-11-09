@@ -1,11 +1,3 @@
-Dependencies:
-freeglut3-dev
-mesa-common-dev
-libwxgtk3.0-dev
-g++
-cmake
-libxmu-dev
-
 #
 # Arch Linux (2015.11.01)
 # Kernel: 4.2.5
