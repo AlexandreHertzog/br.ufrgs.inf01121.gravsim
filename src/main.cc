@@ -4,6 +4,7 @@
 
 #include "window.hh"
 #include "storage.hh"
+#include "logger.hh"
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -14,6 +15,11 @@
 IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
+<<<<<<< HEAD
+=======
+	//GravSim::Engine::Logger *log = new GravSim::Engine::Logger();
+	GravSim::Engine::Logger::LoggerInit();
+>>>>>>> logger-class
   std::unique_ptr<GravSim::Engine::Storage> storage(
     new GravSim::Engine::Storage()
   );
