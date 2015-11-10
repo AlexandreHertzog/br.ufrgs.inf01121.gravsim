@@ -19,6 +19,11 @@ public:
 	Runner(const wxString &title);
 	~Runner(void);
 
+	// Simulation phases
+	enum class Phase {
+		RUNNING, STEPPED, STOPPED
+	};
+
 	void Execute(void);
 	const std::string GetObjName(void) const;
 
@@ -30,7 +35,10 @@ protected:
 	const std::string GetFilename(void);
 
 private:
+	void StepSimulation(void);
+
 	shared_ptr<GravSim::Engine::Storage> _storage;
+	Phase _simphase;
 }; // class Runner
 } // namespace Engine
 } // namespace GravSim

@@ -13,14 +13,23 @@ using namespace GravSim::Engine;
 Runner::Runner(const wxString &title)
 	: Window(title), _storage(new Storage())
 {
-	unique_ptr<GravSim::Gui::Canvas> canvas(new GravSim::Gui::Canvas(_storage, this));
-	Window::SetCanvas(std::move(canvas));
+	// We create an instance of Storage here to declutter the Window class.
+	Window::SetCanvas(
+		unique_ptr<GravSim::Gui::Canvas>(new GravSim::Gui::Canvas(_storage, this))
+	);
 }
 
 Runner::~Runner(void) {
 }
 
 void Runner::Execute(void) {
+	if (_simphase == Phase::STOPPED) {
+		return;
+	}
+	StepSimulation();
+	if (_simphase == Phase::RUNNING) {
+		Execute();
+	}
 }
 
 const std::string Runner::GetObjName(void) const {
@@ -41,4 +50,7 @@ void Runner::GenerateRandom(const size_t numparticles) {
 
 const std::string Runner::GetFilename(void) {
 	return _storage->GetFilename();
+}
+
+void Runner::StepSimulation(void) {
 }
