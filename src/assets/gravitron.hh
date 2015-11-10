@@ -5,20 +5,20 @@ namespace Assets {
 // TODO: move this somewhere else.
 const int NUM_DIMENSIONS = 2;
 
-/* 'Particle' defines the base class for a particle. There are plans to derive
+/* 'Gravitron' defines the base class for a particle. There are plans to derive
  * it in the following classes:
  * A class that represents a planet
  * A class that represents an electrically charged element. */
-class Particle : GravSim::Gui::Point {
+class Gravitron : GravSim::Gui::Point {
 public:
   // Constructors and destructor.
-  Particle(
+  Gravitron(
     // Physical components
     const double mass, const double *velocity, 
     // Render components
     const double *position, const size_t size = 0
   );
-  ~Particle(void);
+  ~Gravitron(void);
 
   // Access functions
   // Getters
@@ -37,6 +37,6 @@ public:
 private:
   double _mass;
   double _velocity[NUM_DIMENSIONS];
-}; // class Particle
+}; // class Gravitron
 }; // namespace GravSim
 }; // namespace Assets

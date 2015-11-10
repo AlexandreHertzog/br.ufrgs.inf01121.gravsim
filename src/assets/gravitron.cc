@@ -1,10 +1,10 @@
 #include <algorithm>
 
-#include "particle.hh"
+#include "gravitron.hh"
 
 using namespace GravSim::Assets;
 
-Particle::Particle
+Gravitron::Gravitron
 (
   const double mass, const double *velocity, const double *position,
   const size_t size
@@ -15,15 +15,14 @@ Particle::Particle
   std::copy(velocity, velocity + NUM_DIMENSIONS, _velocity);
 }
 
-Particle::~Particle(void)
-{
+Gravitron::~Gravitron(void) {
 }
 
-double Particle::GetMass(void) {
+double Gravitron::GetMass(void) {
   return _mass;
 }
 
-void Particle::ApplyForce(const double *force) {
+void Gravitron::ApplyForce(const double *force) {
   /* To calculate the new speed, there are two concepts being used:
    * momentum = mass * velocity => velocity = momentum / mass
    * variation in momentum = force * (variation in time)
@@ -36,6 +35,6 @@ void Particle::ApplyForce(const double *force) {
   }
 }
 
-void Particle::StepPosition(void) {
+void Gravitron::StepPosition(void) {
   IncrementPosition(_velocity);
 }

@@ -1,2 +1,2 @@
-add_library(assets particle.cc electric.cc)
+add_library(assets gravitron.cc electron.cc)
 set_property(TARGET assets PROPERTY CXX_STANDARD 11)
