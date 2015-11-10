@@ -1,3 +1,6 @@
+#ifndef _GRAVITRON_H_
+#define _GRAVITRON_H_
+
 #include <vector>
 
 #include "point.hh"
@@ -19,3 +22,5 @@ private:
 }; // class Gravitron
 }; // namespace GravSim
 }; // namespace Assets
+
+#endif
