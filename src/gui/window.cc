@@ -95,6 +95,9 @@ void Gui::Window::SetCanvas(std::unique_ptr<Canvas> canvas) {
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   // TODO: parametrize this.
   GenerateRandom(100);
+  if (_canvas == nullptr) {
+    return;
+  }
   _canvas->Refresh();
 }
 
@@ -110,6 +113,9 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
 
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
   LoadPointsFromFile(filename);
+  if (_canvas == nullptr) {
+    return;
+  }
   _canvas->Refresh();
 }
 
