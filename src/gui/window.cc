@@ -80,8 +80,6 @@ Gui::Window::Window(
     Window::OnNew
   ));
 
-  _storage = storage;
-
   Centre();
 }
 
@@ -94,13 +92,9 @@ Gui::Window::~Window(void) {
   //delete _menubar;
 }
 
-void Gui::Window::SetText(const wxString string) {
-  //_statusbar->SetStatusText(string);
-}
-
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   // TODO: parametrize this.
-  _storage->GenerateRandom(100);
+  GenerateRandom(100);
   _canvas->Refresh();
 }
 
@@ -115,16 +109,16 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
   }
 
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
-  _storage->LoadPointsFromFile(filename);
+  LoadPointsFromFile(filename);
   _canvas->Refresh();
 }
 
 void Gui::Window::OnSave(wxCommandEvent &event) {
-  if (_storage->GetFilename() == "default.gsim") {
+  if (GetFilename() == "default.gsim") {
     OnSaveAs(event);
     return;
   }
-  _storage->SavePointsToFile();
+  SavePointsToFile();
 }
 
 void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
@@ -142,7 +136,7 @@ void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
   if (extension != ".gsim") {
     filename.append(".gsim");
   }
-  _storage->SavePointsToFile(filename);
+  SavePointsToFile(filename);
 }
 
 void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
