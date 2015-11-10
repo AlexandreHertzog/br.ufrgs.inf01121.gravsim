@@ -3,14 +3,15 @@
 #include <random> // Used in the constructor.
 #include <sstream> // Used to parse the strings from file.
 #include <fstream> // File management.
-#include <iostream>
 
 #include "logger.hh"
 
 using namespace GravSim::Engine;
 using namespace GravSim::Gui;
 
-Storage::Storage(const std::string filename, const int num_points) {
+Storage::Storage(const std::string filename, const int num_points) 
+	: GSObject()
+{
   _filename = filename;
 }
 
@@ -41,7 +42,7 @@ size_t Storage::SavePointsToFile(const std::string filename) {
     outfile << std::endl;
     count++;
   }
-  Logger::LogInfo(this, "Saved points to file.");
+  Logger::LogInfo(*this, "Saved points to file.");
   outfile.close();
   return count;
 }
@@ -79,14 +80,13 @@ size_t Storage::LoadPointsFromFile(const std::string filename) {
     AppendPoint(p);
     count++;
   }
-  std::cout << "Storage::LoadPointsFromFile : Loaded " << count <<
-    " points from file." << std::endl;
+  Logger::LogInfo(*this, "Loaded points from file.");
   infile.close();
   return count;
 }
 
 void Storage::GenerateRandom(const size_t num_points) {
-  std::cout << "Storage::GenerateRandom : Generating new points." << std::endl;
+  Logger::LogInfo(*this, "Generating new points.");
   _points.clear();
   std::random_device dev;
   std::default_random_engine gen(dev());
