@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "window.hh"
+#include "runner.hh"
 #include "storage.hh"
 #include "logger.hh"
 
@@ -15,15 +15,11 @@
 IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
-<<<<<<< HEAD
-=======
-	//GravSim::Engine::Logger *log = new GravSim::Engine::Logger();
-	GravSim::Engine::Logger::LoggerInit();
->>>>>>> logger-class
+	
   std::unique_ptr<GravSim::Engine::Storage> storage(
     new GravSim::Engine::Storage()
   );
-  GravSim::Gui::Window *win = new GravSim::Gui::Window(std::move(storage), wxT(
+  GravSim::Engine::Runner *win = new GravSim::Engine::Runner(std::move(storage), wxT(
     "Simulador Gravitacional"
   ));
   win->Show(true);
