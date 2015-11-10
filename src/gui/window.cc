@@ -11,9 +11,7 @@
 
 using namespace GravSim;
 
-Gui::Window::Window(
-  std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title
-)
+Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
 {
   // Alloc everything.
@@ -21,7 +19,6 @@ Gui::Window::Window(
   _filemenu  = new wxMenu;
   _editmenu  = new wxMenu;
   _simmenu   = new wxMenu;
-  _canvas    = new Canvas(storage, this);
   //_statusbar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusbar"));
   
   // Append the commands to the "File" menu.
@@ -84,12 +81,15 @@ Gui::Window::Window(
 }
 
 Gui::Window::~Window(void) {
-  delete _canvas;
   // Well, we can't really delete anything from wx unless we want segfaults.
   //delete _simmenu;
   //delete _editmenu;
   //delete _filemenu;
   //delete _menubar;
+}
+
+void Gui::Window::SetCanvas(std::unique_ptr<Canvas> canvas) {
+	_canvas = std::move(canvas);
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {

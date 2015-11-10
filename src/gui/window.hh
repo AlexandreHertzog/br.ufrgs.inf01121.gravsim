@@ -7,7 +7,6 @@
 #include <memory>
 
 #include "canvas.hh"
-#include "storage.hh"
 
 namespace GravSim {
 namespace Gui {
@@ -15,10 +14,9 @@ namespace Gui {
 class Window : public wxFrame {
 public:
   // Constructor and destructor.
-  Window(
-    std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title
-  );
+  Window(const wxString &title);
   ~Window(void);
+  void SetCanvas(std::unique_ptr<Canvas> canvas);
 
 protected:
   // These functions must come from the Storage class.
@@ -58,7 +56,7 @@ private:
   wxMenu    *_editmenu;
   wxMenu    *_simmenu;
   // Canvas is the middle class between the interface and the OpenGL canvas.
-  Canvas    *_canvas;
+  std::unique_ptr<Canvas> _canvas;
 }; // class Window
 }; // namespace Gui
 }; // namespace GravSim

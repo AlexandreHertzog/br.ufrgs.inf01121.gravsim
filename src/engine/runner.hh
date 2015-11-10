@@ -16,7 +16,7 @@ using std::unique_ptr;
 
 class Runner : public GravSim::Gui::Window, public GSObject {
 public:
-	Runner(shared_ptr<GravSim::Engine::Storage> storage, const wxString &title);
+	Runner(const wxString &title);
 	~Runner(void);
 
 	void Execute(void);

@@ -1,5 +1,7 @@
 #include "runner.hh"
 
+#include "canvas.hh"
+
 using namespace GravSim::Engine;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
@@ -8,10 +10,11 @@ using namespace GravSim::Engine;
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-Runner::Runner(shared_ptr<GravSim::Engine::Storage> storage, const wxString &title)
-	: Window(storage, title)
+Runner::Runner(const wxString &title)
+	: Window(title), _storage(new Storage())
 {
-	_storage = storage;
+	unique_ptr<GravSim::Gui::Canvas> canvas(new GravSim::Gui::Canvas(_storage, this));
+	Window::SetCanvas(std::move(canvas));
 }
 
 Runner::~Runner(void) {
