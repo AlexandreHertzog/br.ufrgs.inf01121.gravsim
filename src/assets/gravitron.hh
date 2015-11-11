@@ -28,13 +28,16 @@ public:
    * distance² = catet1² + catet2²
    * cateti² = distance(point1, point2)
    * cateti² = (point1.x - point2.x)² + (point1.y - point2.y)² */
-  std::function<double(double)> GetGravField(const vector<double> point);
+  //std::function<double(double)> GetGravField(const vector<double> point);
+  // This returns the grav function without some stuff: it requires (as parameters)
+  // the mass of the second object and the point in space of that parameter.
+  std::function<double(double, vector<double>)> GetGravField(void);
+
 
   void ApplyForce(const vector<double> force);
 
 private:
-  // Here is hoping that this static won't blow up on the future. It is necessary for the lambda function.
-  static double _mass;
+  double _mass;
   vector<double> _velocity;
 }; // class Gravitron
 }; // namespace GravSim
