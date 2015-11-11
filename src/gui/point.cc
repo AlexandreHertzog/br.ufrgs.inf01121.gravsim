@@ -56,6 +56,16 @@ size_t Point::GetSize(void) const {
 	return _size;
 }
 
+double Point::SquareOfDistance(const std::vector<double> point) {
+	// Square of first term...
+	double distx = (_position[0] - point[0]);
+	distx *= distx;
+	// Square of second term
+	double disty = (_position[1] - point[1]);
+	disty *= disty;
+	return distx + disty;
+}
+
 void Point::SetPosition(const double x, const double y) {
   _position[0] = x;
   _position[1] = y;

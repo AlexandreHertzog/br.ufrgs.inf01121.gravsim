@@ -21,14 +21,18 @@ public:
   double GetY(void) const;
   size_t GetSize(void) const;
 
+  double SquareOfDistance(const vector<double> point);
+  //TODO: move this out of here
+  vector<double> NormalVector(const vector<double> vec);
+
 protected:
+  vector<double> _position;
   void SetPosition(const double x, const double y);
   void SetPosition(const vector<double> position);
   void IncrementPosition(const double x, const double y);
   void IncrementPosition(const vector<double> position);
 
 private:
-  vector<double> _position;
   size_t _size;
 
 }; // class Point
