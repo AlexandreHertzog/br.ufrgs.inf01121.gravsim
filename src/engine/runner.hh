@@ -29,8 +29,8 @@ public:
 
 protected:
 	// Functions from Window.
-	void SavePointsToFile(const std::string filename = "");
-	void LoadPointsFromFile(const std::string filename = "");
+	void SaveParticlesToFile(const std::string filename = "");
+	void LoadParticlesFromFile(const std::string filename = "");
 	void GenerateRandom(const size_t numparticles);
 	const std::string GetFilename(void);
 

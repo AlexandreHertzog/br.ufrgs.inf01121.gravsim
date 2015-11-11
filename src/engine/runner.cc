@@ -14,9 +14,8 @@ Runner::Runner(const wxString &title)
 	: Window(title), _storage(new Storage())
 {
 	// We create an instance of Storage here to declutter the Window class.
-	Window::SetCanvas(
-		unique_ptr<GravSim::Gui::Canvas>(new GravSim::Gui::Canvas(_storage, this))
-	);
+	using GravSim::Gui::Canvas;
+	Window::SetCanvas(unique_ptr<Canvas>(new Canvas(_storage, this)));
 }
 
 Runner::~Runner(void) {
@@ -36,12 +35,12 @@ const std::string Runner::GetObjName(void) const {
 	return "GravSim::Engine::Runner";
 }
 
-void Runner::SavePointsToFile(const std::string filename) {
-	_storage->SavePointsToFile(filename);
+void Runner::SaveParticlesToFile(const std::string filename) {
+	_storage->SaveParticlesToFile(filename);
 }
 
-void Runner::LoadPointsFromFile(const std::string filename) {
-	_storage->LoadPointsFromFile(filename);
+void Runner::LoadParticlesFromFile(const std::string filename) {
+	_storage->LoadParticlesFromFile(filename);
 }
 
 void Runner::GenerateRandom(const size_t numparticles) {

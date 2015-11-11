@@ -5,6 +5,10 @@ include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/gui")
 set(LIBS ${LIBS} gui)
 
+# For the assets
+include_directories("${PROJECT_SOURCE_DIR}/assets")
+set(LIBS ${LIBS} assets)
+
 set(CMAKE_BUILD_TYPE Debug)
 add_library(engine storage.cc logger.cc gsobject.cc runner.cc)
 target_link_libraries(engine ${LIBS})

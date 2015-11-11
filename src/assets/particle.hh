@@ -10,7 +10,8 @@ namespace GravSim {
 namespace Assets {
 
 using GravSim::Gui::Point;
-class Particle : public Gravitron, Electron, Point {
+class Particle : public Gravitron, Electron {
+public:
 	// All terms constructor.
 	Particle(
 		// Point components.

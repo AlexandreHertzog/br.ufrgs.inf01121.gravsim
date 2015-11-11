@@ -20,8 +20,8 @@ public:
 
 protected:
   // These functions must come from the Storage class.
-  virtual void SavePointsToFile(const std::string filename = "") = 0;
-  virtual void LoadPointsFromFile(const std::string filename = "") = 0;
+  virtual void SaveParticlesToFile(const std::string filename = "") = 0;
+  virtual void LoadParticlesFromFile(const std::string filename = "") = 0;
   virtual void GenerateRandom(const size_t numparticles) = 0;
   virtual const std::string GetFilename(void) = 0;
 

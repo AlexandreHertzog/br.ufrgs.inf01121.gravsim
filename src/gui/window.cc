@@ -112,7 +112,7 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
   }
 
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
-  LoadPointsFromFile(filename);
+  LoadParticlesFromFile(filename);
   if (_canvas == nullptr) {
     return;
   }
@@ -124,7 +124,7 @@ void Gui::Window::OnSave(wxCommandEvent &event) {
     OnSaveAs(event);
     return;
   }
-  SavePointsToFile();
+  SaveParticlesToFile();
 }
 
 void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
@@ -142,7 +142,7 @@ void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
   if (extension != ".gsim") {
     filename.append(".gsim");
   }
-  SavePointsToFile(filename);
+  SaveParticlesToFile(filename);
 }
 
 void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {

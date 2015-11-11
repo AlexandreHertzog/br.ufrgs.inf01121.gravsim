@@ -8,8 +8,11 @@
 
 using namespace GravSim::Engine;
 using namespace GravSim::Gui;
+using GravSim::Gui::Point;
+using GravSim::Assets::Particle;
+using std::vector;
 
-Storage::Storage(const std::string filename, const int num_points) 
+Storage::Storage(const std::string filename, const int num_particles) 
 	: GSObject()
 {
   _filename = filename;
@@ -18,24 +21,31 @@ Storage::Storage(const std::string filename, const int num_points)
 Storage::~Storage(void) {
 }
 
-std::shared_ptr<Point> Storage::GetPoint(const size_t index) const {
-  if (index >= _points.size()) {
+std::shared_ptr<Particle> Storage::GetParticle(const size_t index) const {
+  if (index >= _particles.size()) {
     return NULL;
   }
-  return _points[index];
+  return _particles[index];
 }
 
-void Storage::AppendPoint(std::shared_ptr<Point> point) {
-  _points.push_back(point);
+std::shared_ptr<Point> Storage::GetPoint(const size_t index) const {
+  if (index >= _particles.size()) {
+    return NULL;
+  }
+  return _particles[index];
 }
 
-size_t Storage::SavePointsToFile(const std::string filename) {
+void Storage::AppendParticle(std::shared_ptr<Particle> point) {
+  _particles.push_back(point);
+}
+
+size_t Storage::SaveParticlesToFile(const std::string filename) {
   if (filename != "") {
     _filename = filename;
    }
   size_t count = 0;
   std::ofstream outfile(_filename);
-  for (auto p : _points) {
+  for (auto p : _particles) {
     outfile << p->GetX() << " ";
     outfile << p->GetY() << " ";
     outfile << p->GetSize() << " ";
@@ -47,7 +57,7 @@ size_t Storage::SavePointsToFile(const std::string filename) {
   return count;
 }
 
-size_t Storage::LoadPointsFromFile(const std::string filename) {
+size_t Storage::LoadParticlesFromFile(const std::string filename) {
   if (filename != "") {
     _filename = filename;
    }
@@ -67,34 +77,51 @@ size_t Storage::LoadPointsFromFile(const std::string filename) {
   }
   infile.seekg(0);
 
-  _points.clear();
+  _particles.clear();
 
-  size_t count = 0;
-  double buffer[10];
+  // To avoid continuous loop allocations.
+  vector<double> fromfile, position, velocity;
   std::string line;
   while (std::getline(infile, line)) {
-    if (ReadDoubles(line, buffer) == 0) {
+    fromfile = ReadDoubles(line);
+    if (fromfile.size() == 0) {
       break;
     }
-    std::shared_ptr<Point> p(new Point(buffer[0], buffer[1], buffer[2]));
-    AppendPoint(p);
-    count++;
+    position = {fromfile[0], fromfile[1]};
+    velocity = {fromfile[4], fromfile[5]};
+    std::shared_ptr<Particle> p(
+      new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6])
+    );
+    AppendParticle(p);
   }
   Logger::LogInfo(*this, "Loaded points from file.");
   infile.close();
-  return count;
+  return _particles.size();
 }
 
-void Storage::GenerateRandom(const size_t num_points) {
+void Storage::GenerateRandom(const size_t num_particles) {
   Logger::LogInfo(*this, "Generating new points.");
-  _points.clear();
+  _particles.clear();
   std::random_device dev;
   std::default_random_engine gen(dev());
-  std::uniform_real_distribution<double> distr(0.0, 200.0);
+  std::uniform_real_distribution<double> position_random(0.0, 200.0);
+  std::uniform_real_distribution<double> vector_random(0.0, 200.0);
+  std::uniform_real_distribution<double> mass_random(1.0, 200.0);
+  std::uniform_int_distribution<int> scalar_random(1, 20);
 
-  for (int i = 0; i < num_points; i++) {
-    std::shared_ptr<Point> point(new Point(distr(gen), distr(gen), 10));
-    AppendPoint(point);
+  vector<double> position, velocity;
+  double mass;
+  size_t size;
+
+  for (int i = 0; i < num_particles; i++) {
+    position = {position_random(gen), position_random(gen)};
+    velocity = {vector_random(gen), vector_random(gen)};
+    mass = mass_random(gen);
+    size = mass / 10;
+    std::shared_ptr<Particle> point(
+      new Particle(position, size, mass, velocity, vector_random(gen))
+    );
+    AppendParticle(point);
   }
 }
 
@@ -106,22 +133,19 @@ const std::string Storage::GetObjName(void) const {
 	return "GravSim::Engine::Storage";
 }
 
-size_t Storage::ReadDoubles(const std::string line, double *out) {
+vector<double> Storage::ReadDoubles(const std::string line) {
+  vector<double> out;
   const std::string delimitator = " ";
-
-  size_t count = 0;
 
   size_t start = 0;
   auto end = line.find(delimitator);
   while (end != std::string::npos) {
     std::string strvalue = line.substr(start, end - start);
-    out[count] = double(std::atof(strvalue.c_str()));
+    out.push_back(double(std::atof(strvalue.c_str())));
 
     // Update the indices.
     start = end + delimitator.length();
     end = line.find(delimitator, start);
-
-    count++;
   }
-  return count;
+  return out;
 }

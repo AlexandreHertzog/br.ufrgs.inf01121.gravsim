@@ -15,7 +15,10 @@ const double GRAVCONSTANT = 6.674e-11;
 
 class Gravitron : public GravSim::Gui::Point {
 public:
-  Gravitron(const double mass, const vector<double> velocity);
+  Gravitron(
+    const vector<double> position, const double size,
+    const double mass, const vector<double> velocity
+  );
   ~Gravitron(void);
 
   double GetMass(void);

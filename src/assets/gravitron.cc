@@ -5,7 +5,12 @@
 
 using namespace GravSim::Assets;
 
-Gravitron::Gravitron(const double mass, const vector<double> velocity) {
+Gravitron::Gravitron(
+	const vector<double> position, const double size,
+	const double mass, const vector<double> velocity
+)
+	: Point(position, size)
+{
 	_mass = mass;
 	_velocity = velocity;
 }
