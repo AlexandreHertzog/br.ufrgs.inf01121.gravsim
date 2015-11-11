@@ -52,4 +52,38 @@ const std::string Runner::GetFilename(void) {
 }
 
 void Runner::StepSimulation(void) {
+	using GravSim::Assets::Particle;
+
+	shared_ptr<Particle> particle, other_particle;
+	vector<double> distvector;
+
+	std::function<vector<double>(vector<double>)> normalise_vector = [] (vector<double> vec) {
+		double sumofparts = 0;
+		for (size_t i = 0; i < vec.size(); i++) {
+			sumofparts += pow(vec[0], 2);
+		}
+		double magnitude = sqrt(sumofparts);
+		for (size_t i = 0; i < vec.size(); i++) {
+			vec[i] = vec[i] / magnitude;
+		}
+		return vec;
+	};
+
+	vector<double> forcevector;
+	for (size_t i = 0; (particle = _storage->GetParticle(i)) != NULL; i++) {
+		auto gravfield = particle->GetGravField();
+		for (size_t j = i + 1; (other_particle = _storage->GetParticle(j)) != NULL; j++) {
+			// This is the dumb version: we need to manually calculate the force vector.
+			double force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
+			distvector = {
+				particle->GetPosition()[0] + other_particle->GetPosition()[0],
+				particle->GetPosition()[1] + other_particle->GetPosition()[1]
+			};
+			distvector = normalise_vector(distvector);
+			forcevector = {force * distvector[0], force * distvector[1]};
+			
+			particle->ApplyForce(forcevector);
+			other_particle->ApplyForce(forcevector);
+		}
+	}
 }
