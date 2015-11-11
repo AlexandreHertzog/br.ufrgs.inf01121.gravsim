@@ -17,6 +17,7 @@ public:
   Window(const wxString &title);
   ~Window(void);
   void SetCanvas(std::unique_ptr<Canvas> canvas);
+  void UpdateCanvas(void);
 
 protected:
   // These functions must come from the Storage class.

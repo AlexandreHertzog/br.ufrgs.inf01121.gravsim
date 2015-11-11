@@ -1,8 +1,10 @@
 #include "main.h"
 
-#include <memory>
+#include <thread>
 
 #include "runner.hh"
+
+using std::thread;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot

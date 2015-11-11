@@ -17,8 +17,8 @@ void LogInfo(const GSObject &obj, const std::string message);
 void LogWarn(const GSObject &obj, const std::string message);
 void LogError(const GSObject &obj, const std::string message);
 static void Printer(
-	const std::string type, const GSObject &sender,
-	const std::string message 
+  const std::string type, const GSObject &sender,
+  const std::string message 
 );
 
 } // namespace Logger

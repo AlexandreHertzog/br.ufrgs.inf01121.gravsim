@@ -89,7 +89,14 @@ Gui::Window::~Window(void) {
 }
 
 void Gui::Window::SetCanvas(std::unique_ptr<Canvas> canvas) {
-	_canvas = std::move(canvas);
+  _canvas = std::move(canvas);
+}
+
+void Gui::Window::UpdateCanvas(void) {
+  if (_canvas == nullptr) {
+    return;
+  }
+  _canvas->Refresh();
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
