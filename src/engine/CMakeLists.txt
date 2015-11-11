@@ -1,6 +1,8 @@
 # For the debug flags.
 include_directories("${PROJECT_BINARY_DIR}")
 
+include_directories("${PROJECT_SOURCE_DIR}")
+
 # For the GUI stuff
 include_directories("${PROJECT_SOURCE_DIR}/gui")
 set(LIBS ${LIBS} gui)

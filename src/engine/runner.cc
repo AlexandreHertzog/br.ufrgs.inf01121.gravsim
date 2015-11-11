@@ -1,6 +1,7 @@
 #include "runner.hh"
 
 #include "canvas.hh"
+#include "util.hh"
 
 using namespace GravSim::Engine;
 
@@ -59,13 +60,15 @@ void Runner::StepSimulation(void) {
 
 	std::function<vector<double>(vector<double>)> normalise_vector = [] (vector<double> vec) {
 		double sumofparts = 0;
-		for (size_t i = 0; i < vec.size(); i++) {
-			sumofparts += pow(vec[0], 2);
-		}
+		std::function<void(size_t)> operation = [&sumofparts, vec] (size_t i) {
+			sumofparts += pow(vec[i], 2);
+		};
+		GravSim::Util::ApplyToAll(vec, operation);
 		double magnitude = sqrt(sumofparts);
-		for (size_t i = 0; i < vec.size(); i++) {
+		operation = [&vec, magnitude] (size_t i) {
 			vec[i] = vec[i] / magnitude;
-		}
+		};
+		GravSim::Util::ApplyToAll(vec, operation);
 		return vec;
 	};
 
