@@ -6,6 +6,7 @@
 #include "../util.hh"
 
 using namespace GravSim::Assets;
+using GravSim::Util::ApplyToAll;
 
 Gravitron::Gravitron(
   const vector<double> position, const double size,
@@ -43,17 +44,11 @@ void Gravitron::ApplyForce(const vector<double> force) {
   // accel = force / mass
   vector<double> accel;
   const double mass = _mass;
-  std::function<void(size_t)> applyforce = [&accel, force, mass](size_t i) {
-    accel.push_back(force[i] / mass);
-  };
-  GravSim::Util::ApplyToAll(force, applyforce);
+  ApplyToAll(force, [&accel, force, mass](size_t i) {accel.push_back(force[i] / mass);});
   // velocity = accel * time
   // Time is not needed, since this is updated on every step.
   _velocity = accel;
   vector<double> pos = _position;
   const vector<double> vel = _velocity;
-  std::function<void(size_t)> incpos = [vel, &pos] (size_t i) {
-    pos[i] += vel[i];
-  };
-  GravSim::Util::ApplyToAll(pos, incpos);
+  ApplyToAll(pos, [vel, &pos] (size_t i) {pos[i] += vel[i];});
 }
