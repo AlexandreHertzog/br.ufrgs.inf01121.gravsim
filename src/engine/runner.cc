@@ -22,14 +22,13 @@ using GravSim::Util::NormaliseVector;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 Runner::Runner(const wxString &title)
-	: Window(title), _storage(new Storage()),
+	: Window(title), _storage(new Storage()), _isrunning(true),
         _exec(new thread(&Runner::Execute, this))
 {
   // We create an instance of Storage here to declutter the Window class.
   Window::SetCanvas(unique_ptr<Canvas>(new Canvas(_storage, this)));
 
   _simphase = Phase::RUNNING;
-  _isrunning = true;
 }
 
 Runner::~Runner(void) {
@@ -38,9 +37,11 @@ Runner::~Runner(void) {
 }
 
 void Runner::Execute(void) {
+  Logger::LogInfo(*this, "Starting thread.");
   while (_isrunning) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    Window::UpdateCanvas();
     if (_simphase == Phase::PAUSED) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
       continue;
     }
     StepSimulation();
@@ -96,23 +97,31 @@ void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
 void Runner::StepSimulation(void) {
   using GravSim::Assets::Particle;
 
-  shared_ptr<Particle> particle, other_particle;
   vector<double> distvec, forcevec;
+  size_t i = 0, j = i + 1;
+  shared_ptr<Particle> particle = _storage->GetParticle(i);
+  shared_ptr<Particle> other_particle = _storage->GetParticle(j);
 
-  for (size_t i = 0; (particle = _storage->GetParticle(i)) != NULL; i++) {
+  while (particle) {
     auto gravfield = particle->GetGravField();
-    for (size_t j = i + 1; (other_particle = _storage->GetParticle(j)) != NULL; j++) {
+    j = i + 1;
+    while (other_particle) {
       // This is the dumb version: we need to manually calculate the force vector.
       double force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
-      distvec= {
+      force *= 1e20;
+      distvec = {
       	particle->GetPosition()[0] + other_particle->GetPosition()[0],
       	particle->GetPosition()[1] + other_particle->GetPosition()[1]
       };
-      distvec= NormaliseVector(distvec);
-      forcevec= {force * distvec[0], force * distvec[1]};
+      distvec = NormaliseVector(distvec);
+      forcevec = {force * distvec[0], force * distvec[1]};
 			
       particle->ApplyForce(forcevec);
       other_particle->ApplyForce(forcevec);
+      j++;
+      other_particle = _storage->GetParticle(j);
     }
+    i++;
+    particle = _storage->GetParticle(i);
   }
 }
