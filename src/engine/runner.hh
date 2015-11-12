@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <thread>
 
 #include "window.hh"
 #include "storage.hh"
@@ -10,9 +11,6 @@
 
 namespace GravSim {
 namespace Engine {
-
-using std::shared_ptr;
-using std::unique_ptr;
 
 class Runner : public GravSim::Gui::Window, public GSObject {
 public:
@@ -42,7 +40,12 @@ protected:
 private:
   void StepSimulation(void);
 
-  shared_ptr<GravSim::Engine::Storage> _storage;
+  std::shared_ptr<GravSim::Engine::Storage> _storage;
+
+  // Thread related stuff.
+  std::unique_ptr<std::thread> _exec;
+  bool _isrunning;
+
   Phase _simphase;
 }; // class Runner
 } // namespace Engine

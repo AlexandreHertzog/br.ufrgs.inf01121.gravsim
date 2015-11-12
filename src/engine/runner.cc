@@ -1,10 +1,19 @@
 #include "runner.hh"
 
+#include <thread>
+
 #include "canvas.hh"
 #include "util.hh"
 #include "logger.hh"
 
 using namespace GravSim::Engine;
+using std::shared_ptr;
+using std::unique_ptr;
+using std::function;
+using std::thread;
+
+using GravSim::Gui::Canvas;
+using GravSim::Util::NormaliseVector;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -13,26 +22,31 @@ using namespace GravSim::Engine;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 Runner::Runner(const wxString &title)
-	: Window(title), _storage(new Storage())
+	: Window(title), _storage(new Storage()),
+        _exec(new thread(&Runner::Execute, this))
 {
   // We create an instance of Storage here to declutter the Window class.
-  using GravSim::Gui::Canvas;
   Window::SetCanvas(unique_ptr<Canvas>(new Canvas(_storage, this)));
 
   _simphase = Phase::RUNNING;
+  _isrunning = true;
 }
 
 Runner::~Runner(void) {
+  _isrunning = false;
+  _exec->join();
 }
 
 void Runner::Execute(void) {
-  while (true) {
+  while (_isrunning) {
     if (_simphase == Phase::PAUSED) {
-      return;
+      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      continue;
     }
     StepSimulation();
     if (_simphase == Phase::STEPPED) {
-      return;
+      _simphase = Phase::PAUSED;
+      continue;
     }
     if (_simphase == Phase::RUNNING) {
       continue;
@@ -83,37 +97,22 @@ void Runner::StepSimulation(void) {
   using GravSim::Assets::Particle;
 
   shared_ptr<Particle> particle, other_particle;
-  vector<double> distvector;
+  vector<double> distvec, forcevec;
 
-  std::function<vector<double>(vector<double>)> normalise_vector = [] (vector<double> vec) {
-    double sumofparts = 0;
-    std::function<void(size_t)> operation = [&sumofparts, vec] (size_t i) {
-      sumofparts += pow(vec[i], 2);
-    };
-    GravSim::Util::ApplyToAll(vec, operation);
-    double magnitude = sqrt(sumofparts);
-    operation = [&vec, magnitude] (size_t i) {
-      vec[i] = vec[i] / magnitude;
-    };
-    GravSim::Util::ApplyToAll(vec, operation);
-    return vec;
-  };
-
-  vector<double> forcevector;
   for (size_t i = 0; (particle = _storage->GetParticle(i)) != NULL; i++) {
     auto gravfield = particle->GetGravField();
     for (size_t j = i + 1; (other_particle = _storage->GetParticle(j)) != NULL; j++) {
       // This is the dumb version: we need to manually calculate the force vector.
       double force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
-      distvector = {
+      distvec= {
       	particle->GetPosition()[0] + other_particle->GetPosition()[0],
       	particle->GetPosition()[1] + other_particle->GetPosition()[1]
       };
-      distvector = normalise_vector(distvector);
-      forcevector = {force * distvector[0], force * distvector[1]};
+      distvec= NormaliseVector(distvec);
+      forcevec= {force * distvec[0], force * distvec[1]};
 			
-      particle->ApplyForce(forcevector);
-      other_particle->ApplyForce(forcevector);
+      particle->ApplyForce(forcevec);
+      other_particle->ApplyForce(forcevec);
     }
   }
 }
