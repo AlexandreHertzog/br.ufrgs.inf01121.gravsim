@@ -33,7 +33,7 @@ std::function<double(double, vector<double>)> Gravitron::GetGravField(void) {
   return [posx, posy, mymass](double mass, vector<double> pos) {
     double field = GRAVCONSTANT * mymass * mass;
     double incomplete_distance = pow(posx - pos[0], 2) + pow(posy - pos[0], 2);
-    field = GravSim::Util::Division(field, incomplete_distance);
+    field = field / incomplete_distance;
     return field;
   };
 }
