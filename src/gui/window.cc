@@ -64,6 +64,9 @@ Gui::Window::Window(const wxString &title)
     Window::OnAddParticle
   ));
 
+  Connect(ID_PAUSE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnPause
+  ));
   Connect(ID_RESUME, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnResume
   ));
@@ -72,9 +75,6 @@ Gui::Window::Window(const wxString &title)
   ));
   Connect(ID_STEP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnStep
-  ));
-  Connect(wxID_NEW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
-    Window::OnNew
   ));
 
   Centre();
@@ -93,19 +93,17 @@ void Gui::Window::SetCanvas(std::unique_ptr<Canvas> canvas) {
 }
 
 void Gui::Window::UpdateCanvas(void) {
-  if (_canvas == nullptr) {
-    return;
+  if (_canvas) {
+    _canvas->Refresh();
   }
-  _canvas->Refresh();
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   // TODO: parametrize this.
   GenerateRandom(100);
-  if (_canvas == nullptr) {
-    return;
+  if (_canvas) {
+    _canvas->Refresh();
   }
-  _canvas->Refresh();
 }
 
 void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
@@ -120,10 +118,9 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
 
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
   LoadParticlesFromFile(filename);
-  if (_canvas == nullptr) {
-    return;
+  if (_canvas) {
+    _canvas->Refresh();
   }
-  _canvas->Refresh();
 }
 
 void Gui::Window::OnSave(wxCommandEvent &event) {
@@ -159,14 +156,3 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
 }
 
-void Gui::Window::OnPause(wxCommandEvent & WXUNUSED(event)) {
-}
-
-void Gui::Window::OnResume(wxCommandEvent &WXUNUSED(event)) {
-}
-
-void Gui::Window::OnStop(wxCommandEvent &WXUNUSED(event)) {
-}
-
-void Gui::Window::OnStep(wxCommandEvent &WXUNUSED(event)) {
-}

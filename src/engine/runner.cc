@@ -27,7 +27,7 @@ Runner::~Runner(void) {
 
 void Runner::Execute(void) {
   while (true) {
-    if (_simphase == Phase::STOPPED) {
+    if (_simphase == Phase::PAUSED) {
       return;
     }
     StepSimulation();
@@ -58,6 +58,25 @@ void Runner::GenerateRandom(const size_t numparticles) {
 
 const std::string Runner::GetFilename(void) {
   return _storage->GetFilename();
+}
+
+void Runner::OnPause(wxCommandEvent &WXUNUSED(event)) {
+  Logger::LogInfo(*this, "Pausing simulation.");
+  _simphase = Phase::PAUSED;
+}
+
+void Runner::OnResume(wxCommandEvent &WXUNUSED(event)) {
+  Logger::LogInfo(*this, "Resuming simulation.");
+  _simphase = Phase::RUNNING;
+}
+
+void Runner::OnStop(wxCommandEvent &WXUNUSED(event)) {
+  Logger::LogInfo(*this, "Stopping simulation.");
+}
+
+void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
+  Logger::LogInfo(*this, "Stepping simulation.");
+  StepSimulation();
 }
 
 void Runner::StepSimulation(void) {

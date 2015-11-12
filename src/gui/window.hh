@@ -25,6 +25,11 @@ protected:
   virtual void LoadParticlesFromFile(const std::string filename = "") = 0;
   virtual void GenerateRandom(const size_t numparticles) = 0;
   virtual const std::string GetFilename(void) = 0;
+  
+  virtual void OnPause(wxCommandEvent &event) = 0;
+  virtual void OnResume(wxCommandEvent &event) = 0;
+  virtual void OnStop(wxCommandEvent &event) = 0;
+  virtual void OnStep(wxCommandEvent &event) = 0;
 
 private:
   enum {
@@ -43,11 +48,6 @@ private:
   void OnOpen(wxCommandEvent &event);
   
   void OnAddParticle(wxCommandEvent &event);
-  
-  void OnPause(wxCommandEvent &event);
-  void OnResume(wxCommandEvent &event);
-  void OnStop(wxCommandEvent &event);
-  void OnStep(wxCommandEvent &event);
   
   // Internal variables.
   // 'menubar' is the bar below the window title bar.

@@ -21,7 +21,7 @@ public:
 
   // Simulation phases
   enum class Phase {
-    RUNNING, STEPPED, STOPPED
+    RUNNING, PAUSED, STEPPED
   };
 
   void Execute(void);
@@ -33,6 +33,11 @@ protected:
   void LoadParticlesFromFile(const std::string filename = "");
   void GenerateRandom(const size_t numparticles);
   const std::string GetFilename(void);
+
+  void OnPause(wxCommandEvent &event);
+  void OnResume(wxCommandEvent &event);
+  void OnStop(wxCommandEvent &event);
+  void OnStep(wxCommandEvent &event);
 
 private:
   void StepSimulation(void);
