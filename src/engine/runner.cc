@@ -14,6 +14,7 @@ using std::thread;
 
 using GravSim::Gui::Canvas;
 using GravSim::Util::NormaliseVector;
+using GravSim::Assets::Particle;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -95,20 +96,28 @@ void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void Runner::StepSimulation(void) {
-  using GravSim::Assets::Particle;
 
-  vector<double> distvec, forcevec;
-  size_t i = 0, j = i + 1;
-  shared_ptr<Particle> particle = _storage->GetParticle(i);
-  shared_ptr<Particle> other_particle = _storage->GetParticle(j);
+  // We use statics to avoid allocing in every single step.
+  static vector<double> distvec = {0}, forcevec = {0};
+  static size_t i = 0, j = 0;
+  static shared_ptr<Particle> particle = nullptr;
+  static shared_ptr<Particle> other_particle = nullptr;
+  static function<double (double, vector<double>)> gravfield = [] (double, vector<double>) {
+    return 0.0;
+  };
+  static double force = 0;
 
-  while (particle) {
-    auto gravfield = particle->GetGravField();
-    j = i + 1;
-    while (other_particle) {
+  i = 0;
+  j = 1;
+  particle = _storage->GetParticle(0);
+  other_particle = _storage->GetParticle(1);
+
+  for (i = 0; (particle); i++) {
+    gravfield = particle->GetGravField();
+    for (j = i + 1; (other_particle); j++) {
       // This is the dumb version: we need to manually calculate the force vector.
-      double force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
-      force *= 1e20;
+      force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
+      force *= 1e10;
       distvec = {
       	particle->GetPosition()[0] + other_particle->GetPosition()[0],
       	particle->GetPosition()[1] + other_particle->GetPosition()[1]
@@ -118,10 +127,8 @@ void Runner::StepSimulation(void) {
 			
       particle->ApplyForce(forcevec);
       other_particle->ApplyForce(forcevec);
-      j++;
       other_particle = _storage->GetParticle(j);
     }
-    i++;
     particle = _storage->GetParticle(i);
   }
 }
