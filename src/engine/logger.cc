@@ -7,6 +7,12 @@ using namespace GravSim::Engine;
 using std::string;
 using GravSim::Exception::Base;
 
+void Logger::LogDebug(const GSObject &sender, const string message) {
+#ifdef _DEBUG_
+  Printer("DEBUG", sender, message);
+#endif
+}
+
 void Logger::LogInfo(const GSObject &sender, const string message) {
   Printer("INFO", sender, message);
 }

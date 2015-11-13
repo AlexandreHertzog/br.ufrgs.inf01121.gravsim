@@ -1,2 +1,3 @@
 #define _TEST_RENDER_ @_TEST_RENDER_@
+#define _DEBUG_ @_DEBUG_@
 

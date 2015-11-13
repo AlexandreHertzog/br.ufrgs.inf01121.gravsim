@@ -108,26 +108,26 @@ void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void Runner::StepSimulation(void) {
-
-  // We use statics to avoid allocing in every single step.
-  static vector<double> distvec = {0}, forcevec = {0};
-  static size_t i = 0, j = 0, numparticles = _storage->GetNumParticles();
-  static shared_ptr<Particle> particle = nullptr;
-  static shared_ptr<Particle> other_particle = nullptr;
-  static function<double (double, vector<double>)> gravfield = [] (double, vector<double>) {
+  vector<double> distvec = {0}, forcevec = {0};
+  static size_t i = 0, j = 0, numparticles = 0;
+  shared_ptr<Particle> particle = nullptr;
+  shared_ptr<Particle> other_particle = nullptr;
+  function<double (double, vector<double>)> gravfield = [] (double, vector<double>) {
     return 0.0;
   };
-  static double force = 0;
+  double force = 0;
+  std::string message = "";
 
   i = 0;
   j = 1;
   try {
+    numparticles = _storage->GetNumParticles();
     for (i = 0; i < numparticles; i++) {
       particle = _storage->GetParticle(i);
-      other_particle = _storage->GetParticle(j);
 
       gravfield = particle->GetGravField();
       for (j = i + 1; j < numparticles; j++) {
+        other_particle = _storage->GetParticle(j);
         // This is the dumb version: we need to manually calculate the force vector.
         force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
         force *= SPEEDFACTOR;
@@ -139,14 +139,7 @@ void Runner::StepSimulation(void) {
 
         forcevec = NumTimesVec(-force, distvec);
         other_particle->ApplyForce(forcevec);
-
-        try {
-          other_particle = _storage->GetParticle(j);
-        } catch (const BadIndex badindex) {
-          break;
-        }
       }
-      particle = _storage->GetParticle(i);
     }
   } catch (const BadIndex badindex) {
     _simphase = Phase::PAUSED;

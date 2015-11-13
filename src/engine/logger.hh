@@ -11,6 +11,7 @@ namespace GravSim {
 namespace Engine {
 namespace Logger {
 
+void LogDebug(const GSObject &obj, const std::string message);
 void LogInfo(const GSObject &obj, const std::string message);
 void LogWarn(const GSObject &obj, const std::string message);
 void LogError(const GravSim::Exception::Base &except, const std::string what, const std::string how);

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 
 # Debug flags
 set(_TEST_RENDER_ 1)
+set(_DEBUG_)
 
 # System libraries and includes.
 find_package(wxWidgets COMPONENTS core base REQUIRED)
