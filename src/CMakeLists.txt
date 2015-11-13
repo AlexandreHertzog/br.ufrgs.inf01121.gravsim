@@ -9,6 +9,13 @@ find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 set(LIBS ${LIBS} ${wxWidgets_LIBRARIES})
 
+# CMake-to-code configuration file
+configure_file(
+  "${PROJECT_SOURCE_DIR}/cmake_defines.hh.in"
+  "${PROJECT_BINARY_DIR}/cmake_defines.hh"
+)
+include_directories("${PROJECT_BINARY_DIR}")
+
 # Local includes.
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/gui")
@@ -18,16 +25,9 @@ include_directories("${PROJECT_SOURCE_DIR}/exception")
 add_subdirectory(gui)
 add_subdirectory(assets)
 add_subdirectory(engine)
+set(LIBS ${LIBS} engine)
 set(LIBS ${LIBS} gui)
 set(LIBS ${LIBS} assets)
-set(LIBS ${LIBS} engine)
-
-# CMake-to-code configuration file
-configure_file(
-  "${PROJECT_SOURCE_DIR}/cmake_defines.hh.in"
-  "${PROJECT_BINARY_DIR}/cmake_defines.hh"
-)
-include_directories("${PROJECT_BINARY_DIR}")
 
 # The wrap-up stuff
 set(CMAKE_BUILD_TYPE Debug)
