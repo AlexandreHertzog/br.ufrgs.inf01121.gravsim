@@ -27,7 +27,9 @@ public:
   std::shared_ptr<GravSim::Assets::Particle> GetParticle(const size_t index) const throw(
     GravSim::Exception::BadIndex
   );
-  std::shared_ptr<GravSim::Gui::Point> GetPoint(const size_t index) const;
+  std::shared_ptr<GravSim::Gui::Point> GetPoint(const size_t index) const throw(
+    GravSim::Exception::BadIndex 
+  );
   void AppendParticle(std::shared_ptr<GravSim::Assets::Particle> particle);
   const size_t GetNumParticles(void) const;
 

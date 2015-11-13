@@ -1,3 +1,6 @@
+#ifndef _BADINDEX_H_
+#define _BADINDEX_H_
+
 #include <exception>
 
 #include "base.hh"
@@ -17,3 +20,5 @@ struct BadIndex : public Base {
 
 } // namespace Exceptions
 } // namespace GravSim
+
+#endif

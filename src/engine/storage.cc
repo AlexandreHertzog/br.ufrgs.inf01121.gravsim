@@ -26,19 +26,19 @@ Storage::~Storage(void) {
 }
 
 shared_ptr<Particle> Storage::GetParticle(const size_t index) const throw(BadIndex) {
-  if (index >= _particles.size()) {
+  shared_ptr<Particle> p;
+  try {
+    p = _particles[index];
+  } catch (...) {
     string how = "Index = ";
     how += index;
     throw BadIndex(*this, how);
   }
-  return _particles[index];
+  return p;
 }
 
-shared_ptr<Point> Storage::GetPoint(const size_t index) const {
-  if (index >= _particles.size()) {
-    return NULL;
-  }
-  return _particles[index];
+shared_ptr<Point> Storage::GetPoint(const size_t index) const throw(BadIndex) {
+  return GetParticle(index);
 }
 
 void Storage::AppendParticle(shared_ptr<Particle> point) {

@@ -12,9 +12,11 @@
 #include <GL/gl.h>
 #endif
 
-#include "cmake_defines.hh"
+#include "badindex.hh"
+
 
 using namespace GravSim::Gui;
+using GravSim::Exception::BadIndex;
 
 BEGIN_EVENT_TABLE(Canvas, wxGLCanvas)
   EVT_PAINT      (Canvas::OnRender)
@@ -60,11 +62,12 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
   PrepareViewport(GetSize().x, GetSize().y);
   glLoadIdentity();
 
-  std::shared_ptr<Point> point;
-  size_t i = 0;
-  while((point = _storage->GetPoint(i)) != NULL) {
-    point->Draw();
-    i++;
+  for (size_t i = 0; i < _storage->GetNumParticles(); i++) {
+    try {
+      _storage->GetPoint(i)->Draw();
+    } catch (const BadIndex badindex) {
+      break;
+    }
   }
   
   glFlush();
