@@ -14,6 +14,8 @@ using std::thread;
 
 using GravSim::Gui::Canvas;
 using GravSim::Util::NormaliseVector;
+using GravSim::Util::NumTimesVec;
+using GravSim::Util::VecPlusVec;
 using GravSim::Assets::Particle;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
@@ -117,16 +119,16 @@ void Runner::StepSimulation(void) {
     for (j = i + 1; (other_particle); j++) {
       // This is the dumb version: we need to manually calculate the force vector.
       force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
-      force *= 1e10;
-      distvec = {
-      	particle->GetPosition()[0] + other_particle->GetPosition()[0],
-      	particle->GetPosition()[1] + other_particle->GetPosition()[1]
-      };
+      force *= SPEEDFACTOR;
+      distvec = VecPlusVec(particle->GetPosition(), other_particle->GetPosition());
       distvec = NormaliseVector(distvec);
-      forcevec = {force * distvec[0], force * distvec[1]};
-			
+
+      forcevec = NumTimesVec(force, distvec);
       particle->ApplyForce(forcevec);
+
+      forcevec = NumTimesVec(-force, distvec);
       other_particle->ApplyForce(forcevec);
+
       other_particle = _storage->GetParticle(j);
     }
     particle = _storage->GetParticle(i);
