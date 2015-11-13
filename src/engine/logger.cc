@@ -16,7 +16,7 @@ void Logger::LogWarn(const GSObject &sender, const string message) {
 }
 
 void Logger::LogError(const Base &sender, const string what, const string how) {
-  string message = what + how;
+  string message = what + " " + how;
   Printer("ERROR", sender.who, message);
 }
 

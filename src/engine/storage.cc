@@ -45,6 +45,10 @@ void Storage::AppendParticle(shared_ptr<Particle> point) {
   _particles.push_back(point);
 }
 
+const size_t Storage::GetNumParticles(void) const {
+  return _particles.size();
+}
+
 size_t Storage::SaveParticlesToFile(const string filename) {
   if (filename != "") {
     _filename = filename;

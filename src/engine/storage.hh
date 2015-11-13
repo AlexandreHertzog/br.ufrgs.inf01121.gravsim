@@ -29,6 +29,7 @@ public:
   );
   std::shared_ptr<GravSim::Gui::Point> GetPoint(const size_t index) const;
   void AppendParticle(std::shared_ptr<GravSim::Assets::Particle> particle);
+  const size_t GetNumParticles(void) const;
 
   size_t SaveParticlesToFile(const std::string filename = "");
   size_t LoadParticlesFromFile(const std::string filename = "") throw(GravSim::Exception::BadFileLoad);

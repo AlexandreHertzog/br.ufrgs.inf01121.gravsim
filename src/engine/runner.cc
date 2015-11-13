@@ -19,6 +19,8 @@ using GravSim::Util::VecPlusVec;
 using GravSim::Assets::Particle;
 
 using GravSim::Exception::BadIndex;
+using GravSim::Exception::BadNewFile;
+using GravSim::Exception::BadFileLoad;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -69,11 +71,17 @@ void Runner::SaveParticlesToFile(const std::string filename) {
 }
 
 void Runner::LoadParticlesFromFile(const std::string filename) {
-  _storage->LoadParticlesFromFile(filename);
+  try {
+    _storage->LoadParticlesFromFile(filename);
+  } catch (const BadFileLoad badload) {
+  }
 }
 
 void Runner::GenerateRandom(const size_t numparticles) {
-  _storage->GenerateRandom(numparticles);
+  try {
+    _storage->GenerateRandom(numparticles);
+  } catch (const BadNewFile badnew) {
+  }
 }
 
 const std::string Runner::GetFilename(void) {
@@ -103,7 +111,7 @@ void Runner::StepSimulation(void) {
 
   // We use statics to avoid allocing in every single step.
   static vector<double> distvec = {0}, forcevec = {0};
-  static size_t i = 0, j = 0;
+  static size_t i = 0, j = 0, numparticles = _storage->GetNumParticles();
   static shared_ptr<Particle> particle = nullptr;
   static shared_ptr<Particle> other_particle = nullptr;
   static function<double (double, vector<double>)> gravfield = [] (double, vector<double>) {
@@ -114,12 +122,12 @@ void Runner::StepSimulation(void) {
   i = 0;
   j = 1;
   try {
-    particle = _storage->GetParticle(0);
-    other_particle = _storage->GetParticle(1);
+    for (i = 0; i < numparticles; i++) {
+      particle = _storage->GetParticle(i);
+      other_particle = _storage->GetParticle(j);
 
-    for (i = 0; (particle); i++) {
       gravfield = particle->GetGravField();
-      for (j = i + 1; (other_particle); j++) {
+      for (j = i + 1; j < numparticles; j++) {
         // This is the dumb version: we need to manually calculate the force vector.
         force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
         force *= SPEEDFACTOR;
@@ -132,7 +140,11 @@ void Runner::StepSimulation(void) {
         forcevec = NumTimesVec(-force, distvec);
         other_particle->ApplyForce(forcevec);
 
-        other_particle = _storage->GetParticle(j);
+        try {
+          other_particle = _storage->GetParticle(j);
+        } catch (const BadIndex badindex) {
+          break;
+        }
       }
       particle = _storage->GetParticle(i);
     }
