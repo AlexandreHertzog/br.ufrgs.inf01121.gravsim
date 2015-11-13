@@ -6,10 +6,10 @@ namespace GravSim {
 namespace Engine {
 class GSObject {
 public:
-	GSObject(void);
-	~GSObject(void);
+  GSObject(void);
+  ~GSObject(void);
 
-	virtual const std::string GetObjName(void) const = 0;
+  virtual const std::string GetObjName(void) const = 0;
 };
 } // namespace Engine
 } // namespace GravSim

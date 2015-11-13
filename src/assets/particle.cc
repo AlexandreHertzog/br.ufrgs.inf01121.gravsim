@@ -1,41 +1,31 @@
-#include <algorithm>
-
 #include "particle.hh"
 
 using namespace GravSim::Assets;
 
-Particle::Particle
-(
-  const double mass, const double *velocity, const double *position,
-  const size_t size
+Particle::Particle(
+  const vector<double> position, const size_t size,
+  const double mass, const vector<double> velocity,
+  const double charge
 )
-  : Point(position, size)
-{
-  _mass = mass;
-  std::copy(velocity, velocity + NUM_DIMENSIONS, _velocity);
-}
-
-Particle::~Particle(void)
+  : Gravitron(position, size, mass, velocity), Electron(charge)
 {
 }
 
-double Particle::GetMass(void) {
-  return _mass;
+Particle::Particle(
+    const vector<double> position, const size_t size,
+    const double mass, const vector<double> velocity
+)
+  : Gravitron(position, size, mass, velocity), Electron(0)
+{
 }
 
-void Particle::ApplyForce(const double *force) {
-  /* To calculate the new speed, there are two concepts being used:
-   * momentum = mass * velocity => velocity = momentum / mass
-   * variation in momentum = force * (variation in time)
-   * Since this apply force function evaluates the step of the simulation, we
-   * consider the variation in time equals 1. So:
-   * velocity = momentum / mass = force * 1 / mass = force / mass
-   * TODO: Check the actual integrity of these conclusions. */
-  for (int i = 0; i < NUM_DIMENSIONS; i++) {
-    _velocity[i] = force[i] / _mass;
-  }
+Particle::Particle(
+    const vector<double> position, const size_t size,
+    const double charge
+)
+  : Gravitron(position, size, 0, {0}), Electron(charge)
+{
 }
 
-void Particle::StepPosition(void) {
-  IncrementPosition(_velocity);
+Particle::~Particle(void) {
 }

@@ -4,33 +4,36 @@
 
 using namespace GravSim::Engine;
 
-void Logger::LoggerInit(void) {
-	//using namespace std::placeholders;
-	//LogError = std::bind(Printer, "ERROR", _1, _2);
-	//LogWarn = std::bind(Printer, "WARN", _1, _2);
-	//LogInfo = std::bind(Printer, "INFO", _1, _2);
+using std::string;
+using GravSim::Exception::Base;
+
+void Logger::LogDebug(const GSObject &sender, const string message) {
+#ifdef _DEBUG_
+  Printer("DEBUG", sender, message);
+#endif
 }
 
-void Logger::LogInfo(const GSObject &sender, const std::string message) {
-	Printer("INFO", sender, message);
+void Logger::LogInfo(const GSObject &sender, const string message) {
+  Printer("INFO", sender, message);
 }
 
-void Logger::LogWarn(const GSObject &sender, const std::string message) {
-	Printer("WARN", sender, message);
+void Logger::LogWarn(const GSObject &sender, const string message) {
+  Printer("WARN", sender, message);
 }
 
-void Logger::LogError(const GSObject &sender, const std::string message) {
-	Printer("ERROR", sender, message);
+void Logger::LogError(const Base &sender, const string what, const string how) {
+  string message = what + " " + how;
+  Printer("ERROR", sender.who, message);
 }
 
 void Logger::Printer(
-	const std::string type, const GSObject &sender, const std::string message
+  const string type, const GSObject &sender, const string message
 ) {
-	if (type == "ERROR") {
-		std::cout << "*************************************************" << std::endl;
-	}
-	std::cout << type <<  ": " << sender.GetObjName() << " : " << message << std::endl;
-	if (type == "ERROR") {
-		std::cout << "*************************************************" << std::endl;
-	}
+  if (type == "ERROR") {
+    std::cout << "*************************************************" << std::endl;
+  }
+  std::cout << type <<  ": " << sender.GetObjName() << " : " << message << std::endl;
+  if (type == "ERROR") {
+    std::cout << "*************************************************" << std::endl;
+  }
 }

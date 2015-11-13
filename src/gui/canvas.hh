@@ -1,4 +1,5 @@
-// Copied from https://wiki.wxwidgets.org/WxGLCanvas
+#ifndef _CANVAS_H_
+#define _CANVAS_H_
 
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
@@ -26,3 +27,5 @@ private:
 }; // class Canvas
 }; // namespace Gui
 }; // namespace GravSim
+
+#endif
