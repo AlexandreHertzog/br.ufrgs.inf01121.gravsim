@@ -18,6 +18,8 @@ using GravSim::Util::NumTimesVec;
 using GravSim::Util::VecPlusVec;
 using GravSim::Assets::Particle;
 
+using GravSim::Exception::BadIndex;
+
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
@@ -111,26 +113,30 @@ void Runner::StepSimulation(void) {
 
   i = 0;
   j = 1;
-  particle = _storage->GetParticle(0);
-  other_particle = _storage->GetParticle(1);
+  try {
+    particle = _storage->GetParticle(0);
+    other_particle = _storage->GetParticle(1);
 
-  for (i = 0; (particle); i++) {
-    gravfield = particle->GetGravField();
-    for (j = i + 1; (other_particle); j++) {
-      // This is the dumb version: we need to manually calculate the force vector.
-      force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
-      force *= SPEEDFACTOR;
-      distvec = VecPlusVec(particle->GetPosition(), other_particle->GetPosition());
-      distvec = NormaliseVector(distvec);
+    for (i = 0; (particle); i++) {
+      gravfield = particle->GetGravField();
+      for (j = i + 1; (other_particle); j++) {
+        // This is the dumb version: we need to manually calculate the force vector.
+        force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
+        force *= SPEEDFACTOR;
+        distvec = VecPlusVec(particle->GetPosition(), other_particle->GetPosition());
+        distvec = NormaliseVector(distvec);
 
-      forcevec = NumTimesVec(force, distvec);
-      particle->ApplyForce(forcevec);
+        forcevec = NumTimesVec(force, distvec);
+        particle->ApplyForce(forcevec);
 
-      forcevec = NumTimesVec(-force, distvec);
-      other_particle->ApplyForce(forcevec);
+        forcevec = NumTimesVec(-force, distvec);
+        other_particle->ApplyForce(forcevec);
 
-      other_particle = _storage->GetParticle(j);
+        other_particle = _storage->GetParticle(j);
+      }
+      particle = _storage->GetParticle(i);
     }
-    particle = _storage->GetParticle(i);
+  } catch (const BadIndex badindex) {
+    _simphase = Phase::PAUSED;
   }
 }

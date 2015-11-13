@@ -10,9 +10,11 @@ include(${wxWidgets_USE_FILE})
 set(LIBS ${LIBS} ${wxWidgets_LIBRARIES})
 
 # Local includes.
+include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/gui")
 include_directories("${PROJECT_SOURCE_DIR}/assets")
 include_directories("${PROJECT_SOURCE_DIR}/engine")
+include_directories("${PROJECT_SOURCE_DIR}/exception")
 add_subdirectory(gui)
 add_subdirectory(assets)
 add_subdirectory(engine)
@@ -25,7 +27,6 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/cmake_defines.hh.in"
   "${PROJECT_BINARY_DIR}/cmake_defines.hh"
 )
-
 include_directories("${PROJECT_BINARY_DIR}")
 
 # The wrap-up stuff

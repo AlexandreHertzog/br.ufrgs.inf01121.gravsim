@@ -4,15 +4,19 @@
 #include <sstream> // Used to parse the strings from file.
 #include <fstream> // File management.
 
-#include "logger.hh"
 
 using namespace GravSim::Engine;
-using namespace GravSim::Gui;
+using GravSim::Exception::BadFileLoad;
+using GravSim::Exception::BadNewFile;
+using GravSim::Exception::BadIndex;
 using GravSim::Gui::Point;
 using GravSim::Assets::Particle;
-using std::vector;
 
-Storage::Storage(const std::string filename, const int num_particles) 
+using std::vector;
+using std::shared_ptr;
+using std::string;
+
+Storage::Storage(const string filename, const int num_particles) 
 	: GSObject()
 {
   _filename = filename;
@@ -21,25 +25,27 @@ Storage::Storage(const std::string filename, const int num_particles)
 Storage::~Storage(void) {
 }
 
-std::shared_ptr<Particle> Storage::GetParticle(const size_t index) const {
+shared_ptr<Particle> Storage::GetParticle(const size_t index) const throw(BadIndex) {
+  if (index >= _particles.size()) {
+    string how = "Index = ";
+    how += index;
+    throw BadIndex(*this, how);
+  }
+  return _particles[index];
+}
+
+shared_ptr<Point> Storage::GetPoint(const size_t index) const {
   if (index >= _particles.size()) {
     return NULL;
   }
   return _particles[index];
 }
 
-std::shared_ptr<Point> Storage::GetPoint(const size_t index) const {
-  if (index >= _particles.size()) {
-    return NULL;
-  }
-  return _particles[index];
-}
-
-void Storage::AppendParticle(std::shared_ptr<Particle> point) {
+void Storage::AppendParticle(shared_ptr<Particle> point) {
   _particles.push_back(point);
 }
 
-size_t Storage::SaveParticlesToFile(const std::string filename) {
+size_t Storage::SaveParticlesToFile(const string filename) {
   if (filename != "") {
     _filename = filename;
    }
@@ -57,7 +63,7 @@ size_t Storage::SaveParticlesToFile(const std::string filename) {
   return count;
 }
 
-size_t Storage::LoadParticlesFromFile(const std::string filename) {
+size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) {
   if (filename != "") {
     _filename = filename;
    }
@@ -81,7 +87,8 @@ size_t Storage::LoadParticlesFromFile(const std::string filename) {
 
   // To avoid continuous loop allocations.
   vector<double> fromfile, position, velocity;
-  std::string line;
+  string line;
+  shared_ptr<Particle> p;
   while (std::getline(infile, line)) {
     fromfile = ReadDoubles(line);
     if (fromfile.size() == 0) {
@@ -89,9 +96,11 @@ size_t Storage::LoadParticlesFromFile(const std::string filename) {
     }
     position = {fromfile[0], fromfile[1]};
     velocity = {fromfile[4], fromfile[5]};
-    std::shared_ptr<Particle> p(
-      new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6])
-    );
+    try {
+      p = shared_ptr<Particle>(new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6]));
+    } catch (...) {
+      throw BadFileLoad(filename);
+    }
     AppendParticle(p);
   }
   Logger::LogInfo(*this, "Loaded points from file.");
@@ -99,7 +108,7 @@ size_t Storage::LoadParticlesFromFile(const std::string filename) {
   return _particles.size();
 }
 
-void Storage::GenerateRandom(const size_t num_particles) {
+void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
   Logger::LogInfo(*this, "Generating new points.");
   _particles.clear();
   std::random_device dev;
@@ -113,34 +122,39 @@ void Storage::GenerateRandom(const size_t num_particles) {
   double mass;
   size_t size;
 
+  shared_ptr<Particle> p;
   for (int i = 0; i < num_particles; i++) {
     position = {position_random(gen), position_random(gen)};
     velocity = {vector_random(gen), vector_random(gen)};
     mass = mass_random(gen);
     size = mass / 10;
-    std::shared_ptr<Particle> point(
-      new Particle(position, size, mass, velocity, vector_random(gen))
-    );
-    AppendParticle(point);
+    try {
+      p = shared_ptr<Particle>(new Particle(position, size, mass, velocity, vector_random(gen)));
+    } catch (...) {
+      string message = "Creating index = ";
+      message += i;
+      throw BadNewFile(*this, message);
+    }
+    AppendParticle(p);
   }
 }
 
-std::string Storage::GetFilename(void) const {
+string Storage::GetFilename(void) const {
   return _filename;
 }
 
-const std::string Storage::GetObjName(void) const {
-	return "GravSim::Engine::Storage";
+const string Storage::GetObjName(void) const {
+  return "GravSim::Engine::Storage";
 }
 
-vector<double> Storage::ReadDoubles(const std::string line) {
+vector<double> Storage::ReadDoubles(const string line) {
   vector<double> out;
-  const std::string delimitator = " ";
+  const string delimitator = " ";
 
   size_t start = 0;
   auto end = line.find(delimitator);
-  while (end != std::string::npos) {
-    std::string strvalue = line.substr(start, end - start);
+  while (end != string::npos) {
+    string strvalue = line.substr(start, end - start);
     out.push_back(double(std::atof(strvalue.c_str())));
 
     // Update the indices.
