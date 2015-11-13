@@ -51,4 +51,5 @@ void Gravitron::ApplyForce(const vector<double> force) {
   vector<double> pos = _position;
   const vector<double> vel = _velocity;
   ApplyToAll(pos, [vel, &pos] (size_t i) {pos[i] += vel[i];});
+  _position = pos;
 }

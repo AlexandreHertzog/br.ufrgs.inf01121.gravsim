@@ -116,7 +116,6 @@ void Runner::StepSimulation(void) {
     return 0.0;
   };
   double force = 0;
-  std::string message = "";
 
   i = 0;
   j = 1;
