@@ -26,16 +26,8 @@ double Gravitron::GetMass(void) {
 }
 
 std::function<double(double, vector<double>)> Gravitron::GetGravField(void) {
-  // Let's avoid some statics.
-  const double posx = _position[0];
-  const double posy = _position[1];
-  const double mymass = _mass;
-
-  return [posx, posy, mymass](double mass, vector<double> pos) {
-    double field = GRAVCONSTANT * mymass * mass;
-    double incomplete_distance = pow(posx - pos[0], 2) + pow(posy - pos[0], 2);
-    field = field / incomplete_distance;
-    return field;
+  return [&](double m2, vector<double> p2) {
+    return FORCEFORMULA(_mass, m2, _position, p2);
   };
 }
 
@@ -46,8 +38,7 @@ void Gravitron::ApplyForce(const vector<double> force) {
   const double mass = _mass;
   ApplyToAll(force, [&accel, force, mass](size_t i) {accel.push_back(force[i] / mass);});
   // velocity = accel * time
-  // Time is not needed, since this is updated on every step.
-  _velocity = accel;
+  ApplyToAll(_velocity, [&](size_t i) {_velocity[i] += accel[i]/1000;});
   vector<double> pos = _position;
   const vector<double> vel = _velocity;
   ApplyToAll(pos, [vel, &pos] (size_t i) {pos[i] += vel[i];});

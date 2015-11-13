@@ -117,23 +117,17 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
   _particles.clear();
   std::random_device dev;
   std::default_random_engine gen(dev());
-  std::uniform_real_distribution<double> position_random(0.0, 200.0);
-  std::uniform_real_distribution<double> vector_random(0.0, 200.0);
-  std::uniform_real_distribution<double> mass_random(1.0, 200.0);
-  std::uniform_int_distribution<int> scalar_random(1, 20);
+  std::uniform_real_distribution<double> position_random(50.0, 150.0);
+  std::uniform_real_distribution<double> velocity_random(-0.01, 0.01);
 
   vector<double> position, velocity;
-  double mass;
-  size_t size;
 
   shared_ptr<Particle> p;
   for (int i = 0; i < num_particles; i++) {
     position = {position_random(gen), position_random(gen)};
-    velocity = {vector_random(gen), vector_random(gen)};
-    mass = mass_random(gen);
-    size = mass / 10;
+    velocity = {velocity_random(gen), velocity_random(gen)};
     try {
-      p = shared_ptr<Particle>(new Particle(position, size, mass, velocity, vector_random(gen)));
+      p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
     } catch (...) {
       string message = "Creating index = ";
       message += i;
@@ -141,6 +135,8 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
     }
     AppendParticle(p);
   }
+  p = shared_ptr<Particle>(new Particle({100, 100}, 50, 500, {0,0}, 0));
+  AppendParticle(p);
 }
 
 string Storage::GetFilename(void) const {
