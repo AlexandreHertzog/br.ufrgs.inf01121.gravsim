@@ -135,8 +135,6 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
     }
     AppendParticle(p);
   }
-  p = shared_ptr<Particle>(new Particle({100, 100}, 50, 500, {0,0}, 0));
-  AppendParticle(p);
 }
 
 string Storage::GetFilename(void) const {

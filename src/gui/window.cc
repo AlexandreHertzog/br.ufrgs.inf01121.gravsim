@@ -100,7 +100,7 @@ void Gui::Window::UpdateCanvas(void) {
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   // TODO: parametrize this.
-  GenerateRandom(100);
+  GenerateRandom(20);
   if (_canvas) {
     _canvas->Refresh();
   }

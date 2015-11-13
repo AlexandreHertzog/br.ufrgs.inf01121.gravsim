@@ -79,7 +79,7 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
 
 void Runner::GenerateRandom(const size_t numparticles) {
   try {
-    _storage->GenerateRandom(10);
+    _storage->GenerateRandom(numparticles);
   } catch (const BadNewFile badnew) {
   }
 }
@@ -124,9 +124,6 @@ void Runner::StepSimulation(void) {
           p1->GetPosition()[1] - p2->GetPosition()[1]
         };
         distance = NormaliseVector(distance);
-        if (force > 10) {
-          force = 10;
-        }
         force *= SPEEDFACTOR;
         vector<double> forcevec = NumTimesVec(force, distance);
         p2->ApplyForce(forcevec);
