@@ -46,7 +46,7 @@ Runner::~Runner(void) {
 void Runner::Execute(void) {
   Logger::LogInfo(*this, "Starting thread.");
   while (_isrunning) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(long(UPDATEFREQ)));
     Window::UpdateCanvas();
     if (_simphase == Phase::PAUSED) {
       continue;
@@ -100,6 +100,7 @@ void Runner::OnResume(wxCommandEvent &WXUNUSED(event)) {
 
 void Runner::OnStop(wxCommandEvent &WXUNUSED(event)) {
   Logger::LogInfo(*this, "Stopping simulation.");
+  _simphase = Phase::PAUSED;
 }
 
 void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
@@ -108,39 +109,30 @@ void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void Runner::StepSimulation(void) {
-  vector<double> distvec = {0}, forcevec = {0};
-  static size_t i = 0, j = 0, numparticles = 0;
-  shared_ptr<Particle> particle = nullptr;
-  shared_ptr<Particle> other_particle = nullptr;
-  function<double (double, vector<double>)> gravfield = [] (double, vector<double>) {
-    return 0.0;
-  };
-  double force = 0;
-
-  i = 0;
-  j = 1;
   try {
-    numparticles = _storage->GetNumParticles();
-    for (i = 0; i < numparticles; i++) {
-      particle = _storage->GetParticle(i);
+    size_t numparticles = _storage->GetNumParticles();
+    for (size_t i = 0; i < numparticles; i++) {
+      for (size_t j = i + 1; j < numparticles; j++) {
+        shared_ptr<Particle> p1 = _storage->GetParticle(i);
+        shared_ptr<Particle> p2 = _storage->GetParticle(j);
 
-      gravfield = particle->GetGravField();
-      for (j = i + 1; j < numparticles; j++) {
-        other_particle = _storage->GetParticle(j);
-        // This is the dumb version: we need to manually calculate the force vector.
-        force = gravfield(other_particle->GetMass(), other_particle->GetPosition());
+        auto p1field = p1->GetGravField();
+        double force = p1field(p2->GetMass(), p2->GetPosition());
+
+        vector<double> distance = {
+          p1->GetPosition()[0] - p2->GetPosition()[0],
+          p1->GetPosition()[1] - p2->GetPosition()[1]
+        };
+        distance = NormaliseVector(distance);
         force *= SPEEDFACTOR;
-        distvec = VecPlusVec(particle->GetPosition(), other_particle->GetPosition());
-        distvec = NormaliseVector(distvec);
-
-        forcevec = NumTimesVec(force, distvec);
-        particle->ApplyForce(forcevec);
-
-        forcevec = NumTimesVec(-force, distvec);
-        other_particle->ApplyForce(forcevec);
+        vector<double> forcevec = NumTimesVec(force, distance);
+        p2->ApplyForce(forcevec);
+        forcevec = NumTimesVec(-force, distance);
+        p1->ApplyForce(forcevec);
       }
     }
-  } catch (const BadIndex badindex) {
+  } catch (const BadIndex except) {
+    std::cout << "ops" << std::endl;
     _simphase = Phase::PAUSED;
   }
 }

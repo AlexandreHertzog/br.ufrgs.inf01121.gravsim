@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "point.hh"
+#include "util.hh"
 
 using std::vector;
 
@@ -12,6 +13,11 @@ namespace GravSim {
 namespace Assets {
 
 const double GRAVCONSTANT = 6.674e-11;
+const std::function<double(double, double, std::vector<double>, std::vector<double>)> FORCEFORMULA =
+  [] (double m1, double m2, std::vector<double> p1, std::vector<double> p2) {
+    return GRAVCONSTANT * m1 * m2 / GravSim::Util::Square(GravSim::Util::DistanceBetween<double>(p1, p2));
+  };
+
 
 class Gravitron : public GravSim::Gui::Point {
 public:
