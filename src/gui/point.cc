@@ -14,7 +14,7 @@
 
 using namespace GravSim::Gui;
 // TODO: change all constants after the NUM_DIMENTIONS constant changes place.
-
+// testing: separated float values for r g b 
 Point::Point(const double x, const double y, const size_t size) {
   SetPosition(x, y);
   _size = size;
@@ -28,9 +28,10 @@ Point::Point(const vector<double> position, const size_t size) {
 Point::~Point(void) {
 }
 
-void Point::Draw(void) {
+void Point::Draw(float _r, float _g, float _b) {
   glPointSize(_size);
   glBegin(GL_POINTS);
+  glColor3f(_r, _g, _b);
     glVertex3f(_position[0], _position[1], 0);
   glEnd();
 }

@@ -13,7 +13,7 @@ public:
   Point(const vector<double> position, const size_t size = 0);
   Point(const double x = 0, const double y = 0, const size_t size = 0);
   ~Point(void);
-  void Draw(void);
+  void Draw(float r, float g, float b);
   
   void LoadPosition(double &outx, double &outy) const;
   const vector<double> GetPosition(void) const;
@@ -31,10 +31,9 @@ protected:
   void SetPosition(const vector<double> position);
   void IncrementPosition(const double x, const double y);
   void IncrementPosition(const vector<double> position);
-
 private:
   size_t _size;
-
+  
 }; // class Point
 }; // namespace Gui
 }; // namespace GravSim

@@ -28,6 +28,16 @@ END_EVENT_TABLE()
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
+// Just for testing purpose
+// TODO(pedro): After finishing and testing the optmized way of coloring the particles
+// get rid of this.
+int aux = 0;
+float m = 0;
+float r_number = 1;
+float g_number = 1;
+float b_number = 1;
+//
+
 Canvas::Canvas(
   std::shared_ptr<GravSim::Engine::Storage> storage, wxFrame *parent
 )
@@ -64,7 +74,15 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
 
   for (size_t i = 0; i < _storage->GetNumParticles(); i++) {
     try {
-      _storage->GetPoint(i)->Draw();
+      if (aux == 0) {
+	m = _storage->GetParticle(i)->GetMass();
+	r_number = ((float) rand() / (RAND_MAX));
+	g_number = ((float) rand() / (RAND_MAX));
+	b_number = ((float) rand() / (RAND_MAX));
+	std::cout << "Color: " << r_number << " " << g_number << " " << b_number << std::endl;
+	aux = 1;
+      }
+      _storage->GetPoint(i)->Draw(r_number, g_number, b_number);
     } catch (const BadIndex badindex) {
       break;
     }
