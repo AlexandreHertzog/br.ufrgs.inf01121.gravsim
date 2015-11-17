@@ -7,28 +7,39 @@
 #include <memory>
 
 #include "canvas.hh"
-#include "storage.hh"
 
-namespace GravSim{
+namespace GravSim {
 namespace Gui {
-
-enum {
-	ID_SAVE_AS,
-	ID_ADD_PART,
-	ID_PAUSE,
-	ID_RESUME,
-	ID_STOP,
-	ID_STEP
-};
 
 class Window : public wxFrame {
 public:
   // Constructor and destructor.
-  Window(std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title);
+  Window(const wxString &title);
   ~Window(void);
-  void SetText(const wxString string);
+  void SetCanvas(std::unique_ptr<Canvas> canvas);
+  void UpdateCanvas(void);
+
+protected:
+  // These functions must come from the Storage class.
+  virtual void SaveParticlesToFile(const std::string filename = "") = 0;
+  virtual void LoadParticlesFromFile(const std::string filename = "") = 0;
+  virtual void GenerateRandom(const size_t numparticles) = 0;
+  virtual const std::string GetFilename(void) = 0;
+  
+  virtual void OnPause(wxCommandEvent &event) = 0;
+  virtual void OnResume(wxCommandEvent &event) = 0;
+  virtual void OnStop(wxCommandEvent &event) = 0;
+  virtual void OnStep(wxCommandEvent &event) = 0;
 
 private:
+  enum {
+    ID_SAVE_AS,
+    ID_ADD_PART,
+    ID_PAUSE,
+    ID_RESUME,
+    ID_STOP,
+    ID_STEP
+  };
   // Connection functions.
   void OnQuit(wxCommandEvent &event);
   void OnNew(wxCommandEvent &event);
@@ -38,11 +49,6 @@ private:
   
   void OnAddParticle(wxCommandEvent &event);
   
-  void OnPause(wxCommandEvent &event);
-  void OnResume(wxCommandEvent &event);
-  void OnStop(wxCommandEvent &event);
-  void OnStep(wxCommandEvent &event);
-  
   // Internal variables.
   // 'menubar' is the bar below the window title bar.
   wxMenuBar *_menubar;
@@ -51,11 +57,7 @@ private:
   wxMenu    *_editmenu;
   wxMenu    *_simmenu;
   // Canvas is the middle class between the interface and the OpenGL canvas.
-  Canvas    *_canvas;
-
-  std::shared_ptr<GravSim::Engine::Storage> _storage;
-  
-  //wxStatusBar *_statusbar;
+  std::unique_ptr<Canvas> _canvas;
 }; // class Window
 }; // namespace Gui
 }; // namespace GravSim

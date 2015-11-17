@@ -11,9 +11,7 @@
 
 using namespace GravSim;
 
-Gui::Window::Window(
-  std::shared_ptr<GravSim::Engine::Storage> storage, const wxString &title
-)
+Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
 {
   // Alloc everything.
@@ -21,7 +19,6 @@ Gui::Window::Window(
   _filemenu  = new wxMenu;
   _editmenu  = new wxMenu;
   _simmenu   = new wxMenu;
-  _canvas    = new Canvas(storage, this);
   //_statusbar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusbar"));
   
   // Append the commands to the "File" menu.
@@ -67,6 +64,9 @@ Gui::Window::Window(
     Window::OnAddParticle
   ));
 
+  Connect(ID_PAUSE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
+    Window::OnPause
+  ));
   Connect(ID_RESUME, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnResume
   ));
@@ -76,17 +76,11 @@ Gui::Window::Window(
   Connect(ID_STEP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnStep
   ));
-  Connect(wxID_NEW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
-    Window::OnNew
-  ));
-
-  _storage = storage;
 
   Centre();
 }
 
 Gui::Window::~Window(void) {
-  delete _canvas;
   // Well, we can't really delete anything from wx unless we want segfaults.
   //delete _simmenu;
   //delete _editmenu;
@@ -94,14 +88,22 @@ Gui::Window::~Window(void) {
   //delete _menubar;
 }
 
-void Gui::Window::SetText(const wxString string) {
-  //_statusbar->SetStatusText(string);
+void Gui::Window::SetCanvas(std::unique_ptr<Canvas> canvas) {
+  _canvas = std::move(canvas);
+}
+
+void Gui::Window::UpdateCanvas(void) {
+  if (_canvas) {
+    _canvas->Refresh();
+  }
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   // TODO: parametrize this.
-  _storage->GenerateRandom(100);
-  _canvas->Refresh();
+  GenerateRandom(20);
+  if (_canvas) {
+    _canvas->Refresh();
+  }
 }
 
 void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
@@ -115,16 +117,18 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
   }
 
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
-  _storage->LoadPointsFromFile(filename);
-  _canvas->Refresh();
+  LoadParticlesFromFile(filename);
+  if (_canvas) {
+    _canvas->Refresh();
+  }
 }
 
 void Gui::Window::OnSave(wxCommandEvent &event) {
-  if (_storage->GetFilename() == "default.gsim") {
+  if (GetFilename() == "default.gsim") {
     OnSaveAs(event);
     return;
   }
-  _storage->SavePointsToFile();
+  SaveParticlesToFile();
 }
 
 void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
@@ -142,7 +146,7 @@ void Gui::Window::OnSaveAs(wxCommandEvent &WXUNUSED(event)) {
   if (extension != ".gsim") {
     filename.append(".gsim");
   }
-  _storage->SavePointsToFile(filename);
+  SaveParticlesToFile(filename);
 }
 
 void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
@@ -152,14 +156,3 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
 }
 
-void Gui::Window::OnPause(wxCommandEvent & WXUNUSED(event)) {
-}
-
-void Gui::Window::OnResume(wxCommandEvent &WXUNUSED(event)) {
-}
-
-void Gui::Window::OnStop(wxCommandEvent &WXUNUSED(event)) {
-}
-
-void Gui::Window::OnStep(wxCommandEvent &WXUNUSED(event)) {
-}
