@@ -25,6 +25,7 @@ protected:
   virtual void LoadParticlesFromFile(const std::string filename = "") = 0;
   virtual void GenerateRandom(const size_t numparticles) = 0;
   virtual const std::string GetFilename(void) = 0;
+  virtual void AddParticle(const std::vector<double> params) = 0;
   
   virtual void OnPause(wxCommandEvent &event) = 0;
   virtual void OnResume(wxCommandEvent &event) = 0;

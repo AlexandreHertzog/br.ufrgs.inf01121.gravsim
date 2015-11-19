@@ -102,7 +102,7 @@ void Gui::Window::UpdateCanvas(void) {
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
   Dialog numparticlesdialog(
-    this, _("Adicionar Partícula"), {_("Quantidade de partículas: ")}
+    this, _("Nova simulação"), {_("Quantidade de partículas: ")}
   );
   if (numparticlesdialog.ShowModal() == wxID_OK) {
     const int numparts = numparticlesdialog.GetIntInputs()[0];
@@ -163,5 +163,12 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 }
 
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
+  Dialog addpartdialog(
+    this, _("Adicionar partícula"), {_("Massa: "), _("Posição x:"), _("Posição y: ")}
+  );
+  if (addpartdialog.ShowModal() == wxID_OK) {
+    vector<double> params = addpartdialog.GetDoubleInputs();
+    AddParticle(params);
+  }
 }
 

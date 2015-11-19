@@ -43,6 +43,7 @@ Dialog::Dialog(
     vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
+  SetSize(wxSize(300, 70*fieldnames.size() + 90));
 }
 
 int Dialog::ShowModal(void) {
