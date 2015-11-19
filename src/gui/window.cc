@@ -1,15 +1,17 @@
-#include "window.hh"
-
-#include <wx/filedlg.h>
-#include <wx/string.h>
-
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
  * or when we'll use a deprecated function. */
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#include "window.hh"
+
+#include <wx/filedlg.h>
+#include <wx/string.h>
+
+#include "dialog.hh"
 
 using namespace GravSim;
+using GravSim::Gui::Dialog;
 
 Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
@@ -99,8 +101,15 @@ void Gui::Window::UpdateCanvas(void) {
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
-  // TODO: parametrize this.
-  GenerateRandom(20);
+  Dialog numparticlesdialog(
+    this, _("Nova simulação"), {_("Quantidade de partículas: ")}
+  );
+  if (numparticlesdialog.ShowModal() == wxID_OK) {
+    const int numparts = numparticlesdialog.GetIntInputs()[0];
+    if (numparts > 0) {
+      GenerateRandom(numparts);
+    }
+  }
   if (_canvas) {
     _canvas->Refresh();
   }
@@ -154,5 +163,12 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 }
 
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
+  Dialog addpartdialog(
+    this, _("Adicionar partícula"), {_("Massa: "), _("Posição x:"), _("Posição y: ")}
+  );
+  if (addpartdialog.ShowModal() == wxID_OK) {
+    vector<double> params = addpartdialog.GetDoubleInputs();
+    AddParticle(params);
+  }
 }
 

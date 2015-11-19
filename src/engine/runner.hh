@@ -35,6 +35,7 @@ protected:
   void LoadParticlesFromFile(const std::string filename = "");
   void GenerateRandom(const size_t numparticles);
   const std::string GetFilename(void);
+  void AddParticle(const std::vector<double> params);
 
   void OnPause(wxCommandEvent &event);
   void OnResume(wxCommandEvent &event);

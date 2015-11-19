@@ -88,6 +88,19 @@ const std::string Runner::GetFilename(void) {
   return _storage->GetFilename();
 }
 
+void Runner::AddParticle(const vector<double> params) {
+  double mass = 0.0, posx = 0.0, posy = 0.0;
+  try {
+    mass = params[0];
+    posx = params[1];
+    posy = params[2];
+  } catch(...) {
+  }
+
+  shared_ptr<Particle> part(new Particle({posx, posy}, mass/10, mass, {0.0, 0.0}, 0.0));
+  _storage->AppendParticle(part);
+}
+
 void Runner::OnPause(wxCommandEvent &WXUNUSED(event)) {
   Logger::LogInfo(*this, "Pausing simulation.");
   _simphase = Phase::PAUSED;
