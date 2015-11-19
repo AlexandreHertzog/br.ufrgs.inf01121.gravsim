@@ -6,27 +6,27 @@
 namespace GravSim {
 namespace Gui {
 
-enum class FieldType {
-  INTEGER, DOUBLE
-};
-
 class Dialog : public wxDialog {
 public:
   Dialog(
-    wxWindow *parent, const wxString &title, const std::vector<wxString> fieldnames,
-    const std::vector<FieldType> fieldtypes
+    wxWindow *parent, const wxString &title, const std::vector<wxString> names
   );
 
-  int GetValue(void);
+  int ShowModal(void);
+
+  std::vector<int> GetIntInputs(void);
+  std::vector<double> GetDoubleInputs(void);
 
 private:
   enum {
-    ID_OK, ID_CANCEL, ID_INPUT, ID_UNUSED
+    ID_UNUSED, ID_OK, ID_CANCEL, ID_INPUT
   };
-  void OnOk(wxCommandEvent &event);
-  void OnCancel(wxCommandEvent &event);
+  void OnOk(void);
+  void OnCancel(void);
 
-  wxTextCtrl *_input;
+  std::vector<wxTextCtrl*> _inputfields;
+  std::vector<int> _convertedints;
+  std::vector<double> _converteddoubles;
   int _dialogreturn;
 };
 

@@ -1,15 +1,14 @@
+/* Unfortunately, this is necessary. g++ points out many warnings about internal
+ * wxWidgets functions that are never used in our program, which causes a lot
+ * of clutter in the terminal. This fixes the problem, though we may not know if
+ * or when we'll use a deprecated function. */
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "window.hh"
 
 #include <wx/filedlg.h>
 #include <wx/string.h>
 
 #include "dialog.hh"
-
-/* Unfortunately, this is necessary. g++ points out many warnings about internal
- * wxWidgets functions that are never used in our program, which causes a lot
- * of clutter in the terminal. This fixes the problem, though we may not know if
- * or when we'll use a deprecated function. */
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 using namespace GravSim;
 using GravSim::Gui::Dialog;
@@ -102,13 +101,14 @@ void Gui::Window::UpdateCanvas(void) {
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
-  Dialog addparticledialog(
-    this, _("Adicionar Partícula"), {_("Quantidade de partículas: ")}, {FieldType::INTEGER}
+  Dialog numparticlesdialog(
+    this, _("Adicionar Partícula"), {_("Quantidade de partículas: ")}
   );
-  addparticledialog.ShowModal();
-  const int numparts = addparticledialog.GetValue();
-  if (numparts != 0) {
-    GenerateRandom(numparts);
+  if (numparticlesdialog.ShowModal() == wxID_OK) {
+    const int numparts = numparticlesdialog.GetIntInputs()[0];
+    if (numparts > 0) {
+      GenerateRandom(numparts);
+    }
   }
   if (_canvas) {
     _canvas->Refresh();

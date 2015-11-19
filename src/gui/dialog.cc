@@ -17,51 +17,75 @@ using std::string;
 using std::vector;
 
 Dialog::Dialog(
-  wxWindow *parent, const wxString &title, const vector<wxString> fieldnames,
-  const vector<FieldType> fieldtypes
+  wxWindow *parent, const wxString &title, const vector<wxString> fieldnames
 )
   : wxDialog(parent, -1, title)
 {
+  wxButton *okbutton = new wxButton(this, wxID_OK, wxT("Ok"), wxDefaultPosition, wxSize(70, 30));
+  wxButton *cancelbutton = new wxButton(this, wxID_CANCEL, wxT("Cancelar"), wxDefaultPosition, wxSize(70, 30));
+  vector<wxStaticText*> texts;
+    for (int i = 0; i < fieldnames.size(); i++) {
+      texts.push_back(new wxStaticText(this, ID_UNUSED, fieldnames[i]));
+      _inputfields.push_back(new wxTextCtrl(
+          this, ID_INPUT, _("50"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER
+      ));
+    }
 
-  wxButton *okbutton = new wxButton(this, ID_OK, wxT("Ok"), wxDefaultPosition, wxSize(70, 30));
-  wxButton *cancelbutton = new wxButton(this, ID_CANCEL, wxT("Cancelar"), wxDefaultPosition, wxSize(70, 30));
-  wxStaticText *txt = new wxStaticText(this, ID_UNUSED, fieldnames[0]);
-
-  _input = new wxTextCtrl(this, ID_INPUT, _("50"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   wxSizerFlags flags;
     flags.Expand().Border(wxALL, 5);
  
   wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);   
-    vbox->Add(txt, flags);
-    vbox->Add(_input, flags);
+    for (int i = 0; i < fieldnames.size(); i++) {
+      vbox->Add(texts[i], flags);
+      vbox->Add(_inputfields[i], flags);
+    }
     vbox->Add(okbutton, flags);
     vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
-
-  Connect(ID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(
-    Dialog::OnOk 
-  ));
-  Connect(ID_CANCEL, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(
-    Dialog::OnCancel 
-  ));
 }
 
-int Dialog::GetValue(void) {
-  return _dialogreturn;
-}
-
-void Dialog::OnOk(wxCommandEvent &event) {
-  const string value = static_cast<const char *>(_input->GetLineText(0).mb_str());
-  try {
-    _dialogreturn = std::stoi(value);
-  } catch (const std::invalid_argument &onconverterror) {
-    _dialogreturn = 0;
+int Dialog::ShowModal(void) {
+  if (wxDialog::ShowModal() == wxID_CANCEL) {
+    OnCancel();
+    return wxID_CANCEL;
   }
+  OnOk();
+  return wxID_OK;
+}
+
+vector<int> Dialog::GetIntInputs(void) {
+  return _convertedints;
+}
+
+vector<double> Dialog::GetDoubleInputs(void) {
+  return _converteddoubles;
+}
+
+void Dialog::OnOk(void) {
+  _convertedints.clear();
+  _converteddoubles.clear();
+  for (int i = 0; i < _inputfields.size(); i++) {
+    string line = static_cast<const char*>(_inputfields[i]->GetLineText(0).mb_str());
+    int convertedint = 0;
+    try {
+      convertedint = std::atoi(line.c_str());
+    } catch (const std::invalid_argument &e) {
+    }
+    _convertedints.push_back(convertedint);
+
+    double converteddouble = 0.0;
+    try {
+      converteddouble = std::atof(line.c_str());
+    } catch (const std::invalid_argument &e) {
+    }
+    _converteddoubles.push_back(converteddouble);
+  }
+
   Close();
 }
 
-void Dialog::OnCancel(wxCommandEvent &event) {
+void Dialog::OnCancel(void) {
   _dialogreturn = 0;
   Close();
 }
