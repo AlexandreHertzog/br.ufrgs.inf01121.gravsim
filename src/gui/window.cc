@@ -128,7 +128,8 @@ void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {
   const std::string filename = static_cast<const char*>(opendialog.GetPath().mb_str());
   LoadParticlesFromFile(filename);
   if (_canvas) {
-    _canvas->Refresh();
+      std::cout << "Refreshing canvas!" << std::endl;
+      _canvas->Refresh();
   }
 }
 
@@ -164,7 +165,7 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
   Dialog addpartdialog(
-    this, _("Adicionar partícula"), {_("Massa: "), _("Posição x:"), _("Posição y: ")}
+    this, _("Adicionar partícula"), {_("Massa: "), _("Posicao x:"), _("Posicao y: ")}
   );
   if (addpartdialog.ShowModal() == wxID_OK) {
     vector<double> params = addpartdialog.GetDoubleInputs();

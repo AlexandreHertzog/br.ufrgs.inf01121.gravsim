@@ -3,7 +3,7 @@
 #include <random> // Used in the constructor.
 #include <sstream> // Used to parse the strings from file.
 #include <fstream> // File management.
-
+#include <iostream>
 
 using namespace GravSim::Engine;
 using GravSim::Exception::BadFileLoad;
@@ -59,6 +59,7 @@ size_t Storage::SaveParticlesToFile(const string filename) {
     outfile << p->GetX() << " ";
     outfile << p->GetY() << " ";
     outfile << p->GetSize() << " ";
+    outfile << p->GetMass() << " ";
     outfile << std::endl;
     count++;
   }
@@ -70,7 +71,7 @@ size_t Storage::SaveParticlesToFile(const string filename) {
 size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) {
   if (filename != "") {
     _filename = filename;
-   }
+  }
   std::ifstream infile(_filename);
   // First, check if file exists.
   if (!infile.good()) {
@@ -101,10 +102,11 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     position = {fromfile[0], fromfile[1]};
     velocity = {fromfile[4], fromfile[5]};
     try {
-      p = shared_ptr<Particle>(new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6]));
+      p = shared_ptr<Particle>(new Particle(position, 10, fromfile[3], velocity, 20));
     } catch (...) {
       throw BadFileLoad(filename);
     }
+    
     AppendParticle(p);
   }
   Logger::LogInfo(*this, "Loaded points from file.");
