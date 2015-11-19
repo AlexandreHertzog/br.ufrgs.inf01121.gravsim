@@ -3,6 +3,8 @@
 #include <wx/filedlg.h>
 #include <wx/string.h>
 
+#include "dialog.hh"
+
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
@@ -10,6 +12,7 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 using namespace GravSim;
+using GravSim::Gui::Dialog;
 
 Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
@@ -99,7 +102,10 @@ void Gui::Window::UpdateCanvas(void) {
 }
 
 void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
-  // TODO: parametrize this.
+  Dialog addparticledialog(
+    this, _("Adicionar Partícula"), {_("Quantidade de partículas: ")}, {FieldType::INTEGER}
+  );
+  addparticledialog.ShowModal();
   GenerateRandom(20);
   if (_canvas) {
     _canvas->Refresh();

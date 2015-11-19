@@ -15,6 +15,6 @@ set(LIBS ${LIBS} ${GLUT_LIBRARY})
 include_directories(${GLUT_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 
 set(CMAKE_BUILD_TYPE Debug)
-add_library(gui canvas.cc window.cc point.cc)
+add_library(gui canvas.cc window.cc point.cc dialog.cc)
 target_link_libraries(gui ${LIBS})
 set_property(TARGET gui PROPERTY CXX_STANDARD 11)
