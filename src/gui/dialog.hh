@@ -1,6 +1,7 @@
 #include <wx/wx.h>
-#include <wx/spinbutt.h>
+#include <wx/textctrl.h>
 #include <vector>
+
 
 namespace GravSim {
 namespace Gui {
@@ -20,12 +21,12 @@ public:
 
 private:
   enum {
-    ID_OK, ID_CANCEL
+    ID_OK, ID_CANCEL, ID_INPUT, ID_UNUSED
   };
   void OnOk(wxCommandEvent &event);
   void OnCancel(wxCommandEvent &event);
 
-  wxSpinButton *_sb;
+  wxTextCtrl *_input;
   int _dialogreturn;
 };
 

@@ -106,7 +106,10 @@ void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
     this, _("Adicionar Partícula"), {_("Quantidade de partículas: ")}, {FieldType::INTEGER}
   );
   addparticledialog.ShowModal();
-  GenerateRandom(20);
+  const int numparts = addparticledialog.GetValue();
+  if (numparts != 0) {
+    GenerateRandom(numparts);
+  }
   if (_canvas) {
     _canvas->Refresh();
   }

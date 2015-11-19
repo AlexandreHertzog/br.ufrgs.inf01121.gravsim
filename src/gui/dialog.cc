@@ -4,6 +4,7 @@
 #include <wx/sizer.h>
 #include <wx/statbox.h>
 #include <wx/button.h>
+#include <wx/textctrl.h>
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -21,20 +22,20 @@ Dialog::Dialog(
 )
   : wxDialog(parent, -1, title)
 {
-  wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 
   wxButton *okbutton = new wxButton(this, ID_OK, wxT("Ok"), wxDefaultPosition, wxSize(70, 30));
   wxButton *cancelbutton = new wxButton(this, ID_CANCEL, wxT("Cancelar"), wxDefaultPosition, wxSize(70, 30));
+  wxStaticText *txt = new wxStaticText(this, ID_UNUSED, fieldnames[0]);
 
-  _sb = new wxSpinButton(this);
-  _sb->SetRange(1, 100);
-  _sb->SetValue(50);
-  wxStaticText *txt = new wxStaticText(this, -1, fieldnames[0]);
-    
-  vbox->Add(txt, 1, wxALIGN_CENTER, wxEXPAND);
-  vbox->Add(_sb, 1, wxALIGN_CENTER, wxEXPAND);
-  vbox->Add(okbutton, 1, wxALIGN_CENTER, wxEXPAND);
-  vbox->Add(cancelbutton, 1, wxALIGN_CENTER, wxEXPAND);
+  _input = new wxTextCtrl(this, ID_INPUT, _("50"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+  wxSizerFlags flags;
+    flags.Expand().Border(wxALL, 5);
+ 
+  wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);   
+    vbox->Add(txt, flags);
+    vbox->Add(_input, flags);
+    vbox->Add(okbutton, flags);
+    vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
 
@@ -46,8 +47,17 @@ Dialog::Dialog(
   ));
 }
 
+int Dialog::GetValue(void) {
+  return _dialogreturn;
+}
+
 void Dialog::OnOk(wxCommandEvent &event) {
-  _dialogreturn = _sb->GetValue();
+  const string value = static_cast<const char *>(_input->GetLineText(0).mb_str());
+  try {
+    _dialogreturn = std::stoi(value);
+  } catch (const std::invalid_argument &onconverterror) {
+    _dialogreturn = 0;
+  }
   Close();
 }
 
