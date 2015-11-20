@@ -1,18 +1,15 @@
-#include <exception>
-#include <string>
+#include "base.hh"
 
 namespace GravSim {
 namespace Exception {
 
-struct BadFileLoad : public std::exception {
-  BadFileLoad(const std::string filename) {
-    this->filename = filename;
+struct BadFileLoad : public Base {
+  BadFileLoad(const GravSim::Engine::GSObject &who, const std::string &how) : Base(who, how) {
+    GravSim::Engine::Logger::LogError(*this, what(), how);
   }
   const char * what() const throw () {
     return "Bad file load.";
   }
-
-  std::string filename;
 };
 
 } // namespace Exceptions

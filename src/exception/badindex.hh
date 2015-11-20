@@ -1,15 +1,13 @@
 #ifndef _BADINDEX_H_
 #define _BADINDEX_H_
 
-#include <exception>
-
 #include "base.hh"
 
 namespace GravSim {
 namespace Exception {
 
 struct BadIndex : public Base {
-  BadIndex(const GravSim::Engine::GSObject &who, const std::string how) : Base(who, how) {
+  BadIndex(const GravSim::Engine::GSObject &who, const std::string &how) : Base(who, how) {
     GravSim::Engine::Logger::LogError(*this, what(), how);
   }
 
