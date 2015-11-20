@@ -24,8 +24,8 @@ public:
   ~Particle(void);
 
   std::vector<double> GetVelocity(void);
+  void ApplyForce(std::vector<double> force, const double mass);
 
-  virtual void ApplyForce(std::vector<double> force) = 0;
   virtual double GetValue(void) const = 0;
   virtual std::function<double(double, std::vector<double>)> GetField(void) const = 0;
 

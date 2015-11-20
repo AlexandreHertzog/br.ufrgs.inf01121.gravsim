@@ -146,9 +146,9 @@ void Runner::StepSimulation(void) {
         distance = NormaliseVector(distance);
         force *= SPEEDFACTOR;
         vector<double> forcevec = NumTimesVec(force, distance);
-        p2->ApplyForce(forcevec);
+        p2->ApplyForce(forcevec, p2->GetValue());
         forcevec = NumTimesVec(-force, distance);
-        p1->ApplyForce(forcevec);
+        p1->ApplyForce(forcevec, p1->GetValue());
       }
     }
   } catch (const BadIndex except) {
