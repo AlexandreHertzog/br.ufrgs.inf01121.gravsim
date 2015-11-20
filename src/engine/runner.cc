@@ -6,6 +6,7 @@
 #include "util.hh"
 #include "logger.hh"
 #include "gravitron.hh"
+#include "cmake_defines.hh"
 
 using namespace GravSim::Engine;
 using std::vector;
@@ -42,6 +43,12 @@ Runner::Runner(const wxString &title)
   _simphase = Phase::RUNNING;
   //InitResults(1);
   StartThread();
+
+#ifdef _OPENMP_ENABLED_
+  Logger::LogInfo(*this, "OpenMP is enabled!");
+#else
+  Logger::LogInfo(*this, "OpenMP is not enabled. It was not found during compile.");
+#endif
 }
 
 Runner::~Runner(void) {
@@ -143,6 +150,9 @@ void Runner::StepSimulation(void) {
   const vector<double> invalid_force = {0.0, 0.0};
   try {
     size_t numparticles = _storage->GetNumParticles();
+#ifdef _OPENMP_ENABLED_
+#pragma omp parallel for schedule(dynamic)
+#endif
     for (size_t i = 0; i < numparticles; i++) {
       for (size_t j = 0; j < numparticles; j++) {
         if (j == i) {
@@ -168,6 +178,9 @@ void Runner::StepSimulation(void) {
         _results[i][j] = forcevec;
       }
     }
+#ifdef _OPENMP_ENABLED_
+#pragma omp parallel for schedule(dynamic)
+#endif
     for (size_t i = 0; i < numparticles; i++) {
       shared_ptr<Particle> p = _storage->GetParticle(i);
       for (size_t j = 0; j < numparticles; j++) {
