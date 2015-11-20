@@ -1,20 +1,12 @@
 #ifndef _GRAVITRON_H_
 #define _GRAVITRON_H_
 
-#include <vector>
-#include <functional>
-
 #include "particle.hh"
-#include "util.hh"
 
 namespace GravSim {
 namespace Assets {
 
-const double GRAVCONSTANT = 6.674e-11;
-const std::function<double(double, double, std::vector<double>, std::vector<double>)> GFORCE =
-  [] (double m1, double m2, std::vector<double> p1, std::vector<double> p2) {
-    return GRAVCONSTANT * m1 * m2 / GravSim::Util::Square(GravSim::Util::DistanceBetween<double>(p1, p2));
-  };
+const double GCONSTANT = 6.674e-11;
 
 class Gravitron : public Particle {
 public:
@@ -22,7 +14,6 @@ public:
     const std::vector<double> position, const size_t size,
     const std::vector<double> velocity, const double mass
   );
-  ~Gravitron(void);
 
   double GetValue(void) const;
 

@@ -1,8 +1,5 @@
 #include "gravitron.hh"
 
-#include <algorithm>
-#include <cmath>
-
 #include "../util.hh"
 
 using std::vector;
@@ -17,9 +14,6 @@ Gravitron::Gravitron(
 {
 }
 
-Gravitron::~Gravitron(void) {
-}
-
 double Gravitron::GetValue(void) const {
   return _mass;
 }
@@ -27,9 +21,11 @@ double Gravitron::GetValue(void) const {
 std::function<double(double, vector<double>)> Gravitron::GetField(void) const {
   const double mass = _mass;
   const std::vector<double> pos = _position;
+  const auto forcefun = FORCE;
+  const double constant = GCONSTANT;
 
-  return [mass, pos](double m2, vector<double> p2) {
-    return GFORCE(mass, m2, pos, p2);
+  return [mass, pos, forcefun, constant](double m2, vector<double> p2) {
+    return forcefun(constant, mass, m2, pos, p2);
   };
 }
 
