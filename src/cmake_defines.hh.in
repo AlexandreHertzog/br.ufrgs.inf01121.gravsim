@@ -1,3 +1,4 @@
 #define _TEST_RENDER_ @_TEST_RENDER_@
 #define _DEBUG_ @_DEBUG_@
+#define _OPENMP_ENABLED_ @_OPENMP_ENABLED_@
 

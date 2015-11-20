@@ -6,6 +6,7 @@
 #include "util.hh"
 #include "logger.hh"
 #include "gravitron.hh"
+#include "cmake_defines.hh"
 
 using namespace GravSim::Engine;
 using std::vector;
@@ -40,7 +41,14 @@ Runner::Runner(const wxString &title)
   Window::SetCanvas(unique_ptr<Canvas>(new Canvas(_storage, this)));
 
   _simphase = Phase::RUNNING;
+  //InitResults(1);
   StartThread();
+
+#ifdef _OPENMP_ENABLED_
+  Logger::LogInfo(*this, "OpenMP is enabled!");
+#else
+  Logger::LogInfo(*this, "OpenMP is not enabled. It was not found during compile.");
+#endif
 }
 
 Runner::~Runner(void) {
@@ -77,7 +85,9 @@ void Runner::SaveParticlesToFile(const std::string filename) {
 void Runner::LoadParticlesFromFile(const std::string filename) {
   try {
     StopThread();
-    _storage->LoadParticlesFromFile(filename);
+    ClearResults();
+    int particlecount = _storage->LoadParticlesFromFile(filename);
+    InitResults(particlecount);
     StartThread();
   } catch (const BadFileLoad badload) {
   }
@@ -86,7 +96,9 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
 void Runner::GenerateRandom(const size_t numparticles) {
   try {
     StopThread();
+    ClearResults();
     _storage->GenerateRandom(numparticles);
+    InitResults(numparticles);
     StartThread();
   } catch (const BadNewFile badnew) {
   }
@@ -135,10 +147,22 @@ void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void Runner::StepSimulation(void) {
+  const vector<double> invalid_force = {0.0, 0.0};
   try {
     size_t numparticles = _storage->GetNumParticles();
+#ifdef _OPENMP_ENABLED_
+#pragma omp parallel for schedule(dynamic)
+#endif
     for (size_t i = 0; i < numparticles; i++) {
-      for (size_t j = i + 1; j < numparticles; j++) {
+      for (size_t j = 0; j < numparticles; j++) {
+        if (j == i) {
+          _results[i][j] = {0.0, 0.0};
+          continue;
+        }
+        if (_results[j][i] != invalid_force) {
+          _results[i][j] = NumTimesVec(-1, _results[j][i]);
+          continue;
+        }
         shared_ptr<Particle> p1 = _storage->GetParticle(i);
         shared_ptr<Particle> p2 = _storage->GetParticle(j);
 
@@ -147,14 +171,24 @@ void Runner::StepSimulation(void) {
         force *= SPEEDFACTOR;
 
         vector<double> distance = {
-          p1->GetPosition()[0] - p2->GetPosition()[0],
-          p1->GetPosition()[1] - p2->GetPosition()[1]
+          p1->GetX() - p2->GetX(), p1->GetY() - p2->GetY()
         };
         distance = NormaliseVector(distance);
-        vector<double> forcevec = NumTimesVec(-force, distance);
-        p2->ApplyForce(forcevec);
-        forcevec = NumTimesVec(force, distance);
-        p1->ApplyForce(forcevec);
+        vector<double> forcevec = NumTimesVec(force, distance);
+        _results[i][j] = forcevec;
+      }
+    }
+#ifdef _OPENMP_ENABLED_
+#pragma omp parallel for schedule(dynamic)
+#endif
+    for (size_t i = 0; i < numparticles; i++) {
+      shared_ptr<Particle> p = _storage->GetParticle(i);
+      for (size_t j = 0; j < numparticles; j++) {
+        if (i == j) {
+          continue;
+        }
+        p->ApplyForce(_results[i][j]);
+        _results[i][j] = {0.0, 0.0};
       }
     }
   } catch (const BadIndex except) {
@@ -170,4 +204,25 @@ void Runner::StopThread(void) {
 void Runner::StartThread(void) {
   _isrunning = true;
   _exec = std::move(unique_ptr<thread>(new thread(&Runner::Execute, this)));
+}
+
+void Runner::ClearResults(void) {
+  for (int i = 0; i < _results.size(); i++) {
+    for (int j = 0; j < _results[i].size(); j++) {
+      _results[i][j].clear();
+    }
+    _results[i].clear();
+  }
+  _results.clear();
+}
+
+void Runner::InitResults(const int size) {
+  ClearResults();
+  for (int i = 0; i < size; i++) {
+    vector<vector<double>> line;
+    for (int j = 0; j < size; j++) {
+      line.push_back({0.0, 0.0});
+    }
+    _results.push_back(line);
+  }
 }
