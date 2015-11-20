@@ -5,7 +5,6 @@
 #include <functional>
 
 #include "point.hh"
-#include "util.hh"
 
 namespace GravSim {
 namespace Assets {

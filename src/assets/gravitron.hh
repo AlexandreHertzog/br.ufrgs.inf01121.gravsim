@@ -16,11 +16,10 @@ const std::function<double(double, double, std::vector<double>, std::vector<doub
     return GRAVCONSTANT * m1 * m2 / GravSim::Util::Square(GravSim::Util::DistanceBetween<double>(p1, p2));
   };
 
-
 class Gravitron : public Particle {
 public:
   Gravitron(
-    const std::vector<double> position, const double size,
+    const std::vector<double> position, const size_t size,
     const std::vector<double> velocity, const double mass
   );
   ~Gravitron(void);
@@ -39,14 +38,13 @@ public:
   // This returns the grav function without some stuff: it requires (as parameters)
   // the mass of the second object and the point in space of that parameter.
   std::function<double(double, std::vector<double>)> GetField(void) const;
-
-
   void ApplyForce(const std::vector<double> force);
 
 private:
-  double _mass;
+  const double _mass;
 }; // class Gravitron
-}; // namespace GravSim
-}; // namespace Assets
+
+} // namespace GravSim
+} // namespace Assets
 
 #endif
