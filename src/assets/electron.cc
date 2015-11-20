@@ -9,10 +9,11 @@ using GravSim::Assets::Particle;
 using GravSim::Util::ApplyToAll;
 
 Electron::Electron(
-  const vector<double> position, const size_t size, const vector<double> velocity,
+  const vector<double> position, const size_t size,
+  const vector<float> color, const vector<double> velocity,
   const double charge
 )
-  : Particle(position, size, velocity), _charge(charge)
+  : Particle(position, size, color, velocity), _charge(charge)
 {
 }
 

@@ -82,7 +82,7 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
 	std::cout << "Color: " << r_number << " " << g_number << " " << b_number << std::endl;
 	aux = 1;
       }
-      _storage->GetPoint(i)->Draw(r_number, g_number, b_number);
+      _storage->GetPoint(i)->Draw();
     } catch (const BadIndex badindex) {
       break;
     }

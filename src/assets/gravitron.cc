@@ -8,9 +8,10 @@ using GravSim::Util::ApplyToAll;
 
 Gravitron::Gravitron(
   const vector<double> position, const size_t size,
-  const vector<double> velocity, const double mass
+  const vector<float> color, const vector<double> velocity,
+  const double mass
 )
-  : Particle(position, size, velocity), _mass(mass)
+  : Particle(position, size, color, velocity), _mass(mass)
 {
 }
 

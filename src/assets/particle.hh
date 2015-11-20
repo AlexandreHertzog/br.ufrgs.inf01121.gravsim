@@ -19,6 +19,7 @@ class Particle : public GravSim::Gui::Point {
 public:
   Particle(
     const std::vector<double> position, const size_t size,
+    const std::vector<float> color,
     const std::vector<double> velocity
   );
 

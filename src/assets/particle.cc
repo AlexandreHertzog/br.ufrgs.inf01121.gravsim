@@ -6,10 +6,10 @@ using namespace GravSim::Assets;
 using GravSim::Util::ApplyToAll;
 
 Particle::Particle(
-  const vector<double> position, const size_t size,
+  const vector<double> position, const size_t size, const vector<float> color,
   const vector<double> velocity
 )
-  : Point(position, size)
+  : Point(position, size, color)
 {
   _velocity = velocity;
 }

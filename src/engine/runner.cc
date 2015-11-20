@@ -104,7 +104,7 @@ void Runner::AddParticle(const vector<double> params) {
 
   const size_t size = mass/10;
 
-  shared_ptr<Particle> part(new Gravitron({posx, posy}, size, {0.0, 0.0}, mass));
+  shared_ptr<Particle> part(new Gravitron({posx, posy}, size, {1.0, 1.0, 1.0}, {0.0, 0.0}, mass));
   _storage->AppendParticle(part);
 }
 
@@ -138,6 +138,7 @@ void Runner::StepSimulation(void) {
 
         auto p1field = p1->GetField();
         double force = p1field(p2->GetValue(), p2->GetPosition());
+        force *= SPEEDFACTOR;
 
         vector<double> distance = {
           p1->GetPosition()[0] - p2->GetPosition()[0],

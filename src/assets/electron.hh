@@ -13,7 +13,8 @@ class Electron : public Particle {
 public:
   Electron(
     const std::vector<double> position, const size_t size,
-    const std::vector<double> velocity, const double charge
+    const std::vector<float> color, const std::vector<double> velocity,
+    const double charge
   );
   
   double GetValue(void) const;

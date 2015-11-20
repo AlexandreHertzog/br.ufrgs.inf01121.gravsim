@@ -13,7 +13,8 @@ class Gravitron : public Particle {
 public:
   Gravitron(
     const std::vector<double> position, const size_t size,
-    const std::vector<double> velocity, const double mass
+    const std::vector<float> color, const std::vector<double> velocity,
+    const double mass
   );
 
   double GetValue(void) const;
