@@ -7,8 +7,6 @@
 #include "point.hh"
 #include "util.hh"
 
-using std::vector;
-
 namespace GravSim {
 namespace Assets {
 
@@ -22,8 +20,8 @@ const std::function<double(double, double, std::vector<double>, std::vector<doub
 class Gravitron : public GravSim::Gui::Point {
 public:
   Gravitron(
-    const vector<double> position, const double size,
-    const double mass, const vector<double> velocity
+    const std::vector<double> position, const double size,
+    const double mass, const std::vector<double> velocity
   );
   ~Gravitron(void);
 
@@ -40,14 +38,14 @@ public:
   //std::function<double(double)> GetGravField(const vector<double> point);
   // This returns the grav function without some stuff: it requires (as parameters)
   // the mass of the second object and the point in space of that parameter.
-  std::function<double(double, vector<double>)> GetGravField(void);
+  std::function<double(double, std::vector<double>)> GetGravField(void);
 
 
-  void ApplyForce(const vector<double> force);
+  void ApplyForce(const std::vector<double> force);
 
 private:
   double _mass;
-  vector<double> _velocity;
+  std::vector<double> _velocity;
 }; // class Gravitron
 }; // namespace GravSim
 }; // namespace Assets

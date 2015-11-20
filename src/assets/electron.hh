@@ -2,6 +2,7 @@
 
 namespace GravSim {
 namespace Assets {
+
 class Electron {
 public:
   Electron(const double charge);
@@ -11,5 +12,6 @@ public:
 private:
   double _charge;
 }; // class ChargeParticle
-}; // namespace Assets
-}; // namespace GravSim
+
+} // namespace Assets
+} // namespace GravSim

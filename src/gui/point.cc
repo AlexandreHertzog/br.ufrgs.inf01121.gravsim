@@ -12,6 +12,8 @@
 #include <GL/gl.h>
 #endif
 
+using std::vector;
+
 using namespace GravSim::Gui;
 // TODO: change all constants after the NUM_DIMENTIONS constant changes place.
 // testing: separated float values for r g b 

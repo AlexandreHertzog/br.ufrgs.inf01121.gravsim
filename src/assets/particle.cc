@@ -1,5 +1,6 @@
 #include "particle.hh"
 
+using std::vector;
 using namespace GravSim::Assets;
 
 Particle::Particle(

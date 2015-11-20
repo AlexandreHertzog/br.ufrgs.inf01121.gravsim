@@ -10,6 +10,7 @@
 
 #include "dialog.hh"
 
+using std::vector;
 using namespace GravSim;
 using GravSim::Gui::Dialog;
 

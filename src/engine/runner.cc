@@ -7,6 +7,7 @@
 #include "logger.hh"
 
 using namespace GravSim::Engine;
+using std::vector;
 using std::shared_ptr;
 using std::unique_ptr;
 using std::function;

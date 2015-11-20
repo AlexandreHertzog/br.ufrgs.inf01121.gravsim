@@ -5,6 +5,7 @@
 
 #include "../util.hh"
 
+using std::vector;
 using namespace GravSim::Assets;
 using GravSim::Util::ApplyToAll;
 
