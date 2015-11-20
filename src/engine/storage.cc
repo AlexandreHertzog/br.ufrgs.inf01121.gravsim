@@ -111,6 +111,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     try {
       p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
     } catch (...) {
+      throw BadFileLoad(*this, filename);
       throw BadFileLoad(filename);
     }
     AppendParticle(p);
