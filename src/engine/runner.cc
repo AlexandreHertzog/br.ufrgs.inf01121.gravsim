@@ -34,18 +34,17 @@ using GravSim::Util::VecPlusVec;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 Runner::Runner(const wxString &title)
-	: Window(title), _storage(new Storage()), _isrunning(true),
-        _exec(new thread(&Runner::Execute, this))
+  : Window(title), _storage(new Storage())
 {
   // We create an instance of Storage here to declutter the Window class.
   Window::SetCanvas(unique_ptr<Canvas>(new Canvas(_storage, this)));
 
   _simphase = Phase::RUNNING;
+  StartThread();
 }
 
 Runner::~Runner(void) {
-  _isrunning = false;
-  _exec->join();
+  StopThread();
 }
 
 void Runner::Execute(void) {
@@ -77,14 +76,18 @@ void Runner::SaveParticlesToFile(const std::string filename) {
 
 void Runner::LoadParticlesFromFile(const std::string filename) {
   try {
+    StopThread();
     _storage->LoadParticlesFromFile(filename);
+    StartThread();
   } catch (const BadFileLoad badload) {
   }
 }
 
 void Runner::GenerateRandom(const size_t numparticles) {
   try {
+    StopThread();
     _storage->GenerateRandom(numparticles);
+    StartThread();
   } catch (const BadNewFile badnew) {
   }
 }
@@ -120,12 +123,15 @@ void Runner::OnResume(wxCommandEvent &WXUNUSED(event)) {
 
 void Runner::OnStop(wxCommandEvent &WXUNUSED(event)) {
   Logger::LogInfo(*this, "Stopping simulation.");
+  StopThread();
+  _storage->ClearParticles();
+  StartThread();
   _simphase = Phase::PAUSED;
 }
 
 void Runner::OnStep(wxCommandEvent &WXUNUSED(event)) {
   Logger::LogInfo(*this, "Stepping simulation.");
-  StepSimulation();
+  _simphase = Phase::STEPPED;
 }
 
 void Runner::StepSimulation(void) {
@@ -154,4 +160,14 @@ void Runner::StepSimulation(void) {
   } catch (const BadIndex except) {
     _simphase = Phase::PAUSED;
   }
+}
+
+void Runner::StopThread(void) {
+  _isrunning = false;
+  _exec->join();
+}
+
+void Runner::StartThread(void) {
+  _isrunning = true;
+  _exec = std::move(unique_ptr<thread>(new thread(&Runner::Execute, this)));
 }

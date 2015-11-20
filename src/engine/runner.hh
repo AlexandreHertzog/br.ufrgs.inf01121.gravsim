@@ -44,6 +44,8 @@ protected:
 
 private:
   void StepSimulation(void);
+  void StopThread(void);
+  void StartThread(void);
 
   std::shared_ptr<GravSim::Engine::Storage> _storage;
 

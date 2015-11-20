@@ -11,8 +11,13 @@ Gravitron::Gravitron(
   const vector<float> color, const vector<double> velocity,
   const double mass
 )
-  : Particle(position, size, color, velocity), _mass(mass)
+  : Particle(position, size, color, velocity)
 {
+  if (mass < 1) {
+    _mass = 100.0;
+  } else {
+    _mass = mass;
+  }
 }
 
 double Gravitron::GetValue(void) const {

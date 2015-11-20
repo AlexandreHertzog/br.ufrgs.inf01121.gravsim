@@ -56,6 +56,10 @@ const size_t Storage::GetNumParticles(void) const {
   return _particles.size();
 }
 
+void Storage::ClearParticles(void) {
+  _particles.clear();
+}
+
 size_t Storage::SaveParticlesToFile(const string filename) {
   if (filename != "") {
     _filename = filename;

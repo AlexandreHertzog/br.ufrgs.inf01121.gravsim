@@ -34,7 +34,7 @@ public:
   void ApplyForce(const std::vector<double> force);
 
 private:
-  const double _mass;
+  double _mass;
 }; // class Gravitron
 
 } // namespace GravSim

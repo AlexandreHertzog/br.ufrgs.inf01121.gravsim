@@ -30,6 +30,7 @@ public:
     throw(GravSim::Exception::BadIndex);
   void AppendParticle(std::shared_ptr<GravSim::Assets::Particle> particle);
   const size_t GetNumParticles(void) const;
+  void ClearParticles(void);
 
   size_t SaveParticlesToFile(const std::string filename = "");
   size_t LoadParticlesFromFile(const std::string filename = "")
