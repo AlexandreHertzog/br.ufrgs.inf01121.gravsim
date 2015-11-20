@@ -4,28 +4,28 @@
 #include <vector>
 #include <functional>
 
-#include "point.hh"
+#include "particle.hh"
 #include "util.hh"
 
 namespace GravSim {
 namespace Assets {
 
 const double GRAVCONSTANT = 6.674e-11;
-const std::function<double(double, double, std::vector<double>, std::vector<double>)> FORCEFORMULA =
+const std::function<double(double, double, std::vector<double>, std::vector<double>)> GFORCE =
   [] (double m1, double m2, std::vector<double> p1, std::vector<double> p2) {
     return GRAVCONSTANT * m1 * m2 / GravSim::Util::Square(GravSim::Util::DistanceBetween<double>(p1, p2));
   };
 
 
-class Gravitron : public GravSim::Gui::Point {
+class Gravitron : public Particle {
 public:
   Gravitron(
     const std::vector<double> position, const double size,
-    const double mass, const std::vector<double> velocity
+    const std::vector<double> velocity, const double mass
   );
   ~Gravitron(void);
 
-  double GetMass(void);
+  double GetValue(void) const;
 
   // Force = (gravity constant) * (_mass * mass) / (distance * distance)
   /* OK, so some modification has to be done here for this to work nicely.
@@ -38,14 +38,13 @@ public:
   //std::function<double(double)> GetGravField(const vector<double> point);
   // This returns the grav function without some stuff: it requires (as parameters)
   // the mass of the second object and the point in space of that parameter.
-  std::function<double(double, std::vector<double>)> GetGravField(void);
+  std::function<double(double, std::vector<double>)> GetField(void) const;
 
 
   void ApplyForce(const std::vector<double> force);
 
 private:
   double _mass;
-  std::vector<double> _velocity;
 }; // class Gravitron
 }; // namespace GravSim
 }; // namespace Assets

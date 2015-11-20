@@ -11,24 +11,26 @@ using GravSim::Util::ApplyToAll;
 
 Gravitron::Gravitron(
   const vector<double> position, const double size,
-  const double mass, const vector<double> velocity
+  const vector<double> velocity, const double mass
 )
-  : Point(position, size)
+  : Particle(position, size, velocity)
 {
   _mass = mass;
-  _velocity = velocity;
 }
 
 Gravitron::~Gravitron(void) {
 }
 
-double Gravitron::GetMass(void) {
+double Gravitron::GetValue(void) const {
   return _mass;
 }
 
-std::function<double(double, vector<double>)> Gravitron::GetGravField(void) {
-  return [&](double m2, vector<double> p2) {
-    return FORCEFORMULA(_mass, m2, _position, p2);
+std::function<double(double, vector<double>)> Gravitron::GetField(void) const {
+  const double mass = _mass;
+  const std::vector<double> pos = _position;
+
+  return [mass, pos](double m2, vector<double> p2) {
+    return GFORCE(mass, m2, pos, p2);
   };
 }
 

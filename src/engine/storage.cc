@@ -4,17 +4,24 @@
 #include <sstream> // Used to parse the strings from file.
 #include <fstream> // File management.
 
+#include "gravitron.hh"
+#include "electron.hh"
 
 using namespace GravSim::Engine;
-using GravSim::Exception::BadFileLoad;
-using GravSim::Exception::BadNewFile;
-using GravSim::Exception::BadIndex;
-using GravSim::Gui::Point;
-using GravSim::Assets::Particle;
 
 using std::vector;
 using std::shared_ptr;
 using std::string;
+
+using GravSim::Assets::Particle;
+using GravSim::Assets::Gravitron;
+using GravSim::Assets::Electron;
+
+using GravSim::Exception::BadFileLoad;
+using GravSim::Exception::BadNewFile;
+using GravSim::Exception::BadIndex;
+
+using GravSim::Gui::Point;
 
 Storage::Storage(const string filename, const int num_particles) 
 	: GSObject()
@@ -89,19 +96,20 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
 
   _particles.clear();
 
-  // To avoid continuous loop allocations.
-  vector<double> fromfile, position, velocity;
   string line;
-  shared_ptr<Particle> p;
   while (std::getline(infile, line)) {
-    fromfile = ReadDoubles(line);
+    const vector<double> fromfile = ReadDoubles(line);
     if (fromfile.size() == 0) {
       break;
     }
-    position = {fromfile[0], fromfile[1]};
-    velocity = {fromfile[4], fromfile[5]};
+    const vector<double> position = {fromfile[0], fromfile[1]};
+    const size_t size = fromfile[2];
+    const vector<double> velocity = {fromfile[3], fromfile[4]};
+    const unsigned int mass = fromfile[5];
+    
+    shared_ptr<Particle> p;
     try {
-      p = shared_ptr<Particle>(new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6]));
+      p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
     } catch (...) {
       throw BadFileLoad(filename);
     }
@@ -125,9 +133,12 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
   shared_ptr<Particle> p;
   for (int i = 0; i < num_particles; i++) {
     position = {position_random(gen), position_random(gen)};
+    const size_t size = 10;
     velocity = {velocity_random(gen), velocity_random(gen)};
+    const unsigned int mass = 100;
+
     try {
-      p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
+      p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
     } catch (...) {
       string message = "Creating index = ";
       message += i;

@@ -1,35 +1,35 @@
-#include <vector>
+#ifndef _PARTICLE_H_
+#define _PARTICLE_H_
 
-#include "gravitron.hh"
-#include "electron.hh"
+#include <vector>
+#include <functional>
+
 #include "point.hh"
+#include "util.hh"
 
 namespace GravSim {
 namespace Assets {
 
-class Particle : public Gravitron, Electron {
+class Particle : public GravSim::Gui::Point {
 public:
-  // All terms constructor.
-  Particle(
-    // Point components.
-    const std::vector<double> position, const size_t size,
-    // Gravitron components.
-    const double mass, const std::vector<double> velocity,
-    // Electron components.
-    const double charge
-  );
-  // Gravitron terms constructor.
   Particle(
     const std::vector<double> position, const size_t size,
-    const double mass, const std::vector<double> velocity
-  );
-  // Electron terms constructor
-  Particle(
-    const std::vector<double> position, const size_t size,
-    const double charge
+    const std::vector<double> velocity
   );
   ~Particle(void);
+
+  std::vector<double> GetVelocity(void);
+  void SetVelocity(const std::vector<double> velocity);
+
+  virtual void ApplyForce(std::vector<double> force) = 0;
+  virtual double GetValue(void) const = 0;
+  virtual std::function<double(double, std::vector<double>)> GetField(void) const = 0;
+
+protected:
+  std::vector<double> _velocity;
 };
 
 } // namespace Assets
 } // namespace GravSim
+
+#endif

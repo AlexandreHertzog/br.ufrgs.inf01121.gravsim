@@ -5,6 +5,7 @@
 #include "canvas.hh"
 #include "util.hh"
 #include "logger.hh"
+#include "gravitron.hh"
 
 using namespace GravSim::Engine;
 using std::vector;
@@ -13,15 +14,18 @@ using std::unique_ptr;
 using std::function;
 using std::thread;
 
-using GravSim::Gui::Canvas;
-using GravSim::Util::NormaliseVector;
-using GravSim::Util::NumTimesVec;
-using GravSim::Util::VecPlusVec;
 using GravSim::Assets::Particle;
+using GravSim::Assets::Gravitron;
 
 using GravSim::Exception::BadIndex;
 using GravSim::Exception::BadNewFile;
 using GravSim::Exception::BadFileLoad;
+
+using GravSim::Gui::Canvas;
+
+using GravSim::Util::NormaliseVector;
+using GravSim::Util::NumTimesVec;
+using GravSim::Util::VecPlusVec;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -98,7 +102,9 @@ void Runner::AddParticle(const vector<double> params) {
   } catch(...) {
   }
 
-  shared_ptr<Particle> part(new Particle({posx, posy}, mass/10, mass, {0.0, 0.0}, 0.0));
+  const size_t size = mass/10;
+
+  shared_ptr<Particle> part(new Gravitron({posx, posy}, size, {0.0, 0.0}, mass));
   _storage->AppendParticle(part);
 }
 
@@ -130,8 +136,8 @@ void Runner::StepSimulation(void) {
         shared_ptr<Particle> p1 = _storage->GetParticle(i);
         shared_ptr<Particle> p2 = _storage->GetParticle(j);
 
-        auto p1field = p1->GetGravField();
-        double force = p1field(p2->GetMass(), p2->GetPosition());
+        auto p1field = p1->GetField();
+        double force = p1field(p2->GetValue(), p2->GetPosition());
 
         vector<double> distance = {
           p1->GetPosition()[0] - p2->GetPosition()[0],

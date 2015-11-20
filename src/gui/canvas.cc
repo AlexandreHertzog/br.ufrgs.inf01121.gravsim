@@ -75,7 +75,7 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
   for (size_t i = 0; i < _storage->GetNumParticles(); i++) {
     try {
       if (aux == 0) {
-	m = _storage->GetParticle(i)->GetMass();
+	//m = _storage->GetParticle(i)->GetMass();
 	r_number = ((float) rand() / (RAND_MAX));
 	g_number = ((float) rand() / (RAND_MAX));
 	b_number = ((float) rand() / (RAND_MAX));
