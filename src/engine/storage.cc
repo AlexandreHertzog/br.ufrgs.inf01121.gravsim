@@ -4,17 +4,24 @@
 #include <sstream> // Used to parse the strings from file.
 #include <fstream> // File management.
 
+#include "gravitron.hh"
+#include "electron.hh"
 
 using namespace GravSim::Engine;
-using GravSim::Exception::BadFileLoad;
-using GravSim::Exception::BadNewFile;
-using GravSim::Exception::BadIndex;
-using GravSim::Gui::Point;
-using GravSim::Assets::Particle;
 
 using std::vector;
 using std::shared_ptr;
 using std::string;
+
+using GravSim::Assets::Particle;
+using GravSim::Assets::Gravitron;
+using GravSim::Assets::Electron;
+
+using GravSim::Exception::BadFileLoad;
+using GravSim::Exception::BadNewFile;
+using GravSim::Exception::BadIndex;
+
+using GravSim::Gui::Point;
 
 Storage::Storage(const string filename, const int num_particles) 
 	: GSObject()
@@ -89,22 +96,26 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
 
   _particles.clear();
 
-  // To avoid continuous loop allocations.
-  vector<double> fromfile, position, velocity;
   string line;
-  shared_ptr<Particle> p;
   while (std::getline(infile, line)) {
-    fromfile = ReadDoubles(line);
+    const vector<double> fromfile = ReadDoubles(line);
     if (fromfile.size() == 0) {
       break;
     }
-    position = {fromfile[0], fromfile[1]};
-    velocity = {fromfile[4], fromfile[5]};
+    const vector<double> position = {fromfile[0], fromfile[1]};
+    const size_t size = fromfile[2];
+    const vector<double> velocity = {fromfile[3], fromfile[4]};
+    const double mass = fromfile[5];
+    const vector<float> color = {
+      static_cast<float>(fromfile[6]), static_cast<float>(fromfile[7]),
+      static_cast<float>(fromfile[8])
+    };
+    
+    shared_ptr<Particle> p;
     try {
-      p = shared_ptr<Particle>(new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6]));
+      p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       throw BadFileLoad(*this, filename);
-      throw BadFileLoad(filename);
     }
     AppendParticle(p);
   }
@@ -121,14 +132,20 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
   std::uniform_real_distribution<double> position_random(50.0, 150.0);
   std::uniform_real_distribution<double> velocity_random(-0.01, 0.01);
 
-  vector<double> position, velocity;
-
   shared_ptr<Particle> p;
   for (int i = 0; i < num_particles; i++) {
-    position = {position_random(gen), position_random(gen)};
-    velocity = {velocity_random(gen), velocity_random(gen)};
+    const vector<double> position = {position_random(gen), position_random(gen)};
+    const size_t size = 10;
+    const vector<double> velocity = {velocity_random(gen), velocity_random(gen)};
+    //const double mass = i % 2 == 0 ? 100.0 : -100;
+    const double mass = 100.0;
+    const vector<float> color = {
+      0.0, mass == 100.0 ? 1.0 : 0.0, mass == 100.0 ? 0.0 : 1.0
+    };
+
     try {
-      p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
+      //p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
+      p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       string message = "Creating index = ";
       message += i;

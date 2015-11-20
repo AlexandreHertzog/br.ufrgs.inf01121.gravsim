@@ -13,7 +13,7 @@ namespace GravSim {
 namespace Engine {
 
 // TODO: parametrize this.
-const long SPEEDFACTOR = 1e9;
+const long SPEEDFACTOR = 1;
 const double UPDATEFREQ = 1000/60;
 
 class Runner : public GravSim::Gui::Window, public GSObject {
