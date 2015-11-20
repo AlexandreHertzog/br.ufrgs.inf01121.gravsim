@@ -53,6 +53,11 @@ private:
   std::unique_ptr<std::thread> _exec;
   bool _isrunning;
 
+  // Results and helper functions.
+  std::vector<std::vector<std::vector<double>>> _results;
+  void ClearResults(void);
+  void InitResults(const int numparticles);
+
   Phase _simphase;
 }; // class Runner
 } // namespace Engine
