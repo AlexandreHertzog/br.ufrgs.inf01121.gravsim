@@ -175,6 +175,7 @@ void Runner::StepSimulation(void) {
           continue;
         }
         p->ApplyForce(_results[i][j]);
+        _results[i][j] = {0.0, 0.0};
       }
     }
   } catch (const BadIndex except) {
