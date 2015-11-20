@@ -11,7 +11,7 @@ namespace GravSim {
 namespace Exception {
 
 struct Base : public std::exception {
-  Base(const GravSim::Engine::GSObject &who, const std::string how) : who(who), how(how) {}
+  Base(const GravSim::Engine::GSObject &who, const std::string &how) : who(who), how(how) {}
   virtual const char * what(void) const throw() = 0;
 
   const GravSim::Engine::GSObject &who;

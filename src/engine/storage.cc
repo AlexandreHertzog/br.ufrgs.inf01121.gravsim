@@ -103,6 +103,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     try {
       p = shared_ptr<Particle>(new Particle(position, fromfile[2], fromfile[3], velocity, fromfile[6]));
     } catch (...) {
+      throw BadFileLoad(*this, filename);
       throw BadFileLoad(filename);
     }
     AppendParticle(p);
