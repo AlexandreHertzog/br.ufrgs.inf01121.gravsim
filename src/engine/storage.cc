@@ -112,7 +112,6 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
       p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
     } catch (...) {
       throw BadFileLoad(*this, filename);
-      throw BadFileLoad(filename);
     }
     AppendParticle(p);
   }
@@ -129,17 +128,17 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
   std::uniform_real_distribution<double> position_random(50.0, 150.0);
   std::uniform_real_distribution<double> velocity_random(-0.01, 0.01);
 
-  vector<double> position, velocity;
-
   shared_ptr<Particle> p;
   for (int i = 0; i < num_particles; i++) {
-    position = {position_random(gen), position_random(gen)};
+    const vector<double> position = {position_random(gen), position_random(gen)};
     const size_t size = 10;
-    velocity = {velocity_random(gen), velocity_random(gen)};
-    const unsigned int mass = 100;
+    const vector<double> velocity = {velocity_random(gen), velocity_random(gen)};
+    const double mass = i % 2 == 0 ? 100.0 : -100;
+    //const double mass = 100.0;
 
     try {
-      p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
+      p = shared_ptr<Particle>(new Electron(position, size, velocity, mass));
+      //p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
     } catch (...) {
       string message = "Creating index = ";
       message += i;

@@ -6,7 +6,8 @@
 namespace GravSim {
 namespace Assets {
 
-const double GCONSTANT = 6.674e-11;
+//const double GCONSTANT = 6.674e-11;
+const double GCONSTANT = 1.0;
 
 class Gravitron : public Particle {
 public:
@@ -29,6 +30,7 @@ public:
   // This returns the grav function without some stuff: it requires (as parameters)
   // the mass of the second object and the point in space of that parameter.
   std::function<double(double, std::vector<double>)> GetField(void) const;
+  void ApplyForce(const std::vector<double> force);
 
 private:
   const double _mass;

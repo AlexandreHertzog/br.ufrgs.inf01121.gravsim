@@ -28,3 +28,15 @@ std::function<double(double, vector<double>)> Gravitron::GetField(void) const {
     return forcefun(constant, mass, m2, pos, p2);
   };
 }
+
+void Gravitron::ApplyForce(const vector<double> force) {
+  // force = mass * accel
+  // accel = force / mass
+  const vector<double> accel = {
+    force[0] / _mass,
+    force[1] / _mass
+  };
+  // velocity = accel * time, time = 1/1000
+  ApplyToAll(_velocity, [&](size_t i) {_velocity[i] += accel[i]/1000;});
+  ApplyToAll(_position, [&](size_t i) {_position[i] += _velocity[i];}); 
+}

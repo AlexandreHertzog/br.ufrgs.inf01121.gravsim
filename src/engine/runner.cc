@@ -144,15 +144,13 @@ void Runner::StepSimulation(void) {
           p1->GetPosition()[1] - p2->GetPosition()[1]
         };
         distance = NormaliseVector(distance);
-        force *= SPEEDFACTOR;
         vector<double> forcevec = NumTimesVec(force, distance);
-        p2->ApplyForce(forcevec, p2->GetValue());
+        p2->ApplyForce(forcevec);
         forcevec = NumTimesVec(-force, distance);
-        p1->ApplyForce(forcevec, p1->GetValue());
+        p1->ApplyForce(forcevec);
       }
     }
   } catch (const BadIndex except) {
-    std::cout << "ops" << std::endl;
     _simphase = Phase::PAUSED;
   }
 }

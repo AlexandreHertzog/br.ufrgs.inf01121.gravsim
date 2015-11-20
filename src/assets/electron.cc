@@ -30,3 +30,15 @@ std::function<double(double, vector<double>)> Electron::GetField(void) const {
     return forcefun(constant, charge, m2, pos, p2);
   };
 }
+
+void Electron::ApplyForce(const vector<double> force) {
+  // force = mass * accel
+  // accel = force / mass
+  const vector<double> accel = {
+    force[0] / 100,
+    force[1] / 100
+  };
+  // velocity = accel * time, time = 1/1000
+  ApplyToAll(_velocity, [&](size_t i) {_velocity[i] += accel[i]/1000;});
+  ApplyToAll(_position, [&](size_t i) {_position[i] += _velocity[i];}); 
+}

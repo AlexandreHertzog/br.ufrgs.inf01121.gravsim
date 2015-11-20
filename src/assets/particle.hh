@@ -21,11 +21,10 @@ public:
     const std::vector<double> position, const size_t size,
     const std::vector<double> velocity
   );
-  ~Particle(void);
 
   std::vector<double> GetVelocity(void);
-  void ApplyForce(std::vector<double> force, const double mass);
 
+  virtual void ApplyForce(const std::vector<double> force) = 0;
   virtual double GetValue(void) const = 0;
   virtual std::function<double(double, std::vector<double>)> GetField(void) const = 0;
 
