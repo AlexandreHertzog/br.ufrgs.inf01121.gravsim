@@ -137,15 +137,15 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
     const vector<double> position = {position_random(gen), position_random(gen)};
     const size_t size = 10;
     const vector<double> velocity = {velocity_random(gen), velocity_random(gen)};
-    const double mass = i % 2 == 0 ? 100.0 : -100;
+    //const double mass = i % 2 == 0 ? 100.0 : -100;
+    const double mass = 100.0;
     const vector<float> color = {
       0.0, mass == 100.0 ? 1.0 : 0.0, mass == 100.0 ? 0.0 : 1.0
     };
-    //const double mass = 100.0;
 
     try {
-      p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
-      //p = shared_ptr<Particle>(new Gravitron(position, size, velocity, mass));
+      //p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
+      p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       string message = "Creating index = ";
       message += i;

@@ -145,9 +145,9 @@ void Runner::StepSimulation(void) {
           p1->GetPosition()[1] - p2->GetPosition()[1]
         };
         distance = NormaliseVector(distance);
-        vector<double> forcevec = NumTimesVec(force, distance);
+        vector<double> forcevec = NumTimesVec(-force, distance);
         p2->ApplyForce(forcevec);
-        forcevec = NumTimesVec(-force, distance);
+        forcevec = NumTimesVec(force, distance);
         p1->ApplyForce(forcevec);
       }
     }
