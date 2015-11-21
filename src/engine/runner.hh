@@ -54,9 +54,10 @@ private:
   bool _isrunning;
 
   // Results and helper functions.
-  std::vector<std::vector<std::vector<double>>> _results;
+  std::vector<double> **_resultmatrix;
+  int _partcount;
   void ClearResults(void);
-  void InitResults(const int numparticles);
+  void InitResults(void);
 
   Phase _simphase;
 }; // class Runner

@@ -86,8 +86,8 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
   try {
     StopThread();
     ClearResults();
-    int particlecount = _storage->LoadParticlesFromFile(filename);
-    InitResults(particlecount);
+    _partcount = _storage->LoadParticlesFromFile(filename);
+    InitResults();
     StartThread();
   } catch (const BadFileLoad badload) {
   }
@@ -97,8 +97,9 @@ void Runner::GenerateRandom(const size_t numparticles) {
   try {
     StopThread();
     ClearResults();
-    _storage->GenerateRandom(numparticles);
-    InitResults(numparticles);
+    _partcount = numparticles;
+    _storage->GenerateRandom(_partcount);
+    InitResults();
     StartThread();
   } catch (const BadNewFile badnew) {
   }
@@ -156,11 +157,11 @@ void Runner::StepSimulation(void) {
     for (size_t i = 0; i < numparticles; i++) {
       for (size_t j = 0; j < numparticles; j++) {
         if (j == i) {
-          _results[i][j] = {0.0, 0.0};
+          _resultmatrix[i][j] = {0.0, 0.0};
           continue;
         }
-        if (_results[j][i] != invalid_force) {
-          _results[i][j] = NumTimesVec(-1, _results[j][i]);
+        if (_resultmatrix[j][i] != invalid_force) {
+          _resultmatrix[i][j] = NumTimesVec(-1, _resultmatrix[j][i]);
           continue;
         }
         shared_ptr<Particle> p1 = _storage->GetParticle(i);
@@ -175,7 +176,7 @@ void Runner::StepSimulation(void) {
         };
         distance = NormaliseVector(distance);
         vector<double> forcevec = NumTimesVec(force, distance);
-        _results[i][j] = forcevec;
+        _resultmatrix[i][j] = forcevec;
       }
     }
 #ifdef _OPENMP_ENABLED_
@@ -187,8 +188,8 @@ void Runner::StepSimulation(void) {
         if (i == j) {
           continue;
         }
-        p->ApplyForce(_results[i][j]);
-        _results[i][j] = {0.0, 0.0};
+        p->ApplyForce(_resultmatrix[i][j]);
+        _resultmatrix[i][j] = {0.0, 0.0};
       }
     }
   } catch (const BadIndex except) {
@@ -207,22 +208,23 @@ void Runner::StartThread(void) {
 }
 
 void Runner::ClearResults(void) {
-  for (int i = 0; i < _results.size(); i++) {
-    for (int j = 0; j < _results[i].size(); j++) {
-      _results[i][j].clear();
+  for (int i = 0; i < _partcount; i++) {
+    for (int j = 0; j < _partcount; j++) {
+      _resultmatrix[i][j].clear();
     }
-    _results[i].clear();
+    delete[] _resultmatrix[i];
   }
-  _results.clear();
+  if (_partcount > 0) {
+    delete[] _resultmatrix;
+  }
 }
 
-void Runner::InitResults(const int size) {
-  ClearResults();
-  for (int i = 0; i < size; i++) {
-    vector<vector<double>> line;
-    for (int j = 0; j < size; j++) {
-      line.push_back({0.0, 0.0});
+void Runner::InitResults(void) {
+  _resultmatrix = new vector<double>*[_partcount];
+  for (int i = 0; i < _partcount; i++) {
+    _resultmatrix[i] = new vector<double>[_partcount];
+    for (int j = 0; j < _partcount; j++) {
+      _resultmatrix[i][j] = {0.0, 0.0};
     }
-    _results.push_back(line);
   }
 }
