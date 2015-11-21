@@ -77,9 +77,9 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
   }
 }
 
-void Runner::GenerateRandom(const size_t numparticles) {
+void Runner::GenerateRandom(const size_t numparticles, int p_type) {
   try {
-    _storage->GenerateRandom(numparticles);
+      _storage->GenerateRandom(numparticles, p_type);
   } catch (const BadNewFile badnew) {
   }
 }

@@ -9,14 +9,16 @@
 #include <wx/string.h>
 
 #include "dialog.hh"
+#include "customDialog.hh"
 
 using namespace GravSim;
 using GravSim::Gui::Dialog;
+using GravSim::Gui::CustomDialog;
 
 Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
 {
-  // Alloc everything.
+    // Alloc everything.
   _menubar   = new wxMenuBar;
   _filemenu  = new wxMenu;
   _editmenu  = new wxMenu;
@@ -78,7 +80,7 @@ Gui::Window::Window(const wxString &title)
   Connect(ID_STEP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(
     Window::OnStep
   ));
-
+    
   Centre();
 }
 
@@ -100,19 +102,21 @@ void Gui::Window::UpdateCanvas(void) {
   }
 }
 
-void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
-  Dialog numparticlesdialog(
-    this, _("Nova simulação"), {_("Quantidade de partículas: ")}
-  );
-  if (numparticlesdialog.ShowModal() == wxID_OK) {
-    const int numparts = numparticlesdialog.GetIntInputs()[0];
-    if (numparts > 0) {
-      GenerateRandom(numparts);
+void Gui::Window::OnNew(wxCommandEvent &event) {    
+    CustomDialog custDiag(
+        this, _("Nova simulação"), {_("Quantidade de partículas: ")}
+        );
+    
+    if (custDiag.ShowModal() == wxID_OK) {
+        const int numparts = custDiag.GetIntInputs()[0];
+        if (numparts > 0) {
+            if (custDiag.isGravCheck) GenerateRandom(numparts, 0);
+            if (custDiag.isElecCheck) GenerateRandom(numparts, 1);
+        }
     }
-  }
-  if (_canvas) {
-    _canvas->Refresh();
-  }
+    if (_canvas) {
+        _canvas->Refresh();
+    }
 }
 
 void Gui::Window::OnOpen(wxCommandEvent &WXUNUSED(event)) {

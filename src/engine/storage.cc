@@ -114,7 +114,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
   return _particles.size();
 }
 
-void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
+void Storage::GenerateRandom(const size_t num_particles, int p_type) throw(BadNewFile) {
   Logger::LogInfo(*this, "Generating new points.");
   _particles.clear();
   std::random_device dev;
@@ -129,7 +129,14 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
     position = {position_random(gen), position_random(gen)};
     velocity = {velocity_random(gen), velocity_random(gen)};
     try {
-      p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
+        if (p_type == 0) {
+            p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
+            //Logger::LogInfo(*this, "Particulas do tipo gravitron");
+        }
+        if (p_type == 1) {
+            p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity,  10));
+            //Logger::LogInfo(*this, "Particulas do tipo electron");
+        }
     } catch (...) {
       string message = "Creating index = ";
       message += i;

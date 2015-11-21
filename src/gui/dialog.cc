@@ -5,7 +5,7 @@
 #include <wx/statbox.h>
 #include <wx/button.h>
 #include <wx/textctrl.h>
-
+#include <iostream>
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
  * of clutter in the terminal. This fixes the problem, though we may not know if
@@ -19,10 +19,12 @@ using std::vector;
 Dialog::Dialog(
   wxWindow *parent, const wxString &title, const vector<wxString> fieldnames
 )
-  : wxDialog(parent, -1, title)
+    : wxDialog(parent, -1, title)
 {
+
   wxButton *okbutton = new wxButton(this, wxID_OK, wxT("Ok"), wxDefaultPosition, wxSize(70, 30));
   wxButton *cancelbutton = new wxButton(this, wxID_CANCEL, wxT("Cancelar"), wxDefaultPosition, wxSize(70, 30));
+
   vector<wxStaticText*> texts;
     for (int i = 0; i < fieldnames.size(); i++) {
       texts.push_back(new wxStaticText(this, ID_UNUSED, fieldnames[i]));
@@ -43,7 +45,8 @@ Dialog::Dialog(
     vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
-  SetSize(wxSize(300, 70*fieldnames.size() + 90));
+  SetSize(wxSize(300, 70*fieldnames.size() + 140));
+
 }
 
 int Dialog::ShowModal(void) {
