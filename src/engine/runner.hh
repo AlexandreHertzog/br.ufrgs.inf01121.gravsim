@@ -56,7 +56,6 @@ private:
   // Results and helper functions.
   std::vector<double> **_resultmatrix;
   int _partcount;
-  void ClearResults(void);
   void InitResults(void);
 
   Phase _simphase;

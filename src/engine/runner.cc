@@ -27,6 +27,7 @@ using GravSim::Gui::Canvas;
 using GravSim::Util::NormaliseVector;
 using GravSim::Util::NumTimesVec;
 using GravSim::Util::VecPlusVec;
+using GravSim::Util::ClearMatrix;
 
 /* Unfortunately, this is necessary. g++ points out many warnings about internal
  * wxWidgets functions that are never used in our program, which causes a lot
@@ -85,7 +86,7 @@ void Runner::SaveParticlesToFile(const std::string filename) {
 void Runner::LoadParticlesFromFile(const std::string filename) {
   try {
     StopThread();
-    ClearResults();
+    ClearMatrix(_resultmatrix, 0, _partcount);
     _partcount = _storage->LoadParticlesFromFile(filename);
     InitResults();
     StartThread();
@@ -96,7 +97,7 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
 void Runner::GenerateRandom(const size_t numparticles) {
   try {
     StopThread();
-    ClearResults();
+    ClearMatrix(_resultmatrix, 0, _partcount);
     _partcount = numparticles;
     _storage->GenerateRandom(_partcount);
     InitResults();
@@ -205,18 +206,6 @@ void Runner::StopThread(void) {
 void Runner::StartThread(void) {
   _isrunning = true;
   _exec = std::move(unique_ptr<thread>(new thread(&Runner::Execute, this)));
-}
-
-void Runner::ClearResults(void) {
-  for (int i = 0; i < _partcount; i++) {
-    for (int j = 0; j < _partcount; j++) {
-      _resultmatrix[i][j].clear();
-    }
-    delete[] _resultmatrix[i];
-  }
-  if (_partcount > 0) {
-    delete[] _resultmatrix;
-  }
 }
 
 void Runner::InitResults(void) {

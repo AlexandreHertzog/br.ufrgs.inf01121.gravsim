@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <cmath>
+#include <vector>
 
 namespace GravSim {
 namespace Util {
@@ -45,6 +46,21 @@ inline TVector VecPlusVec(const TVector vec1, const TVector vec2) {
 template <typename TNumber, class TVector>
 TNumber DistanceBetween(const TVector v1, const TVector v2) {
   return sqrt(Square(v1[0] - v2[0]) + Square(v1[1] - v2[1]));
+}
+
+template <class TVector>
+inline void ClearMatrix(TVector &vec, const int index, const int maxindex) {
+  if (index >= maxindex) {
+    return;
+  }
+  ClearMatrix(vec[index], index+1, maxindex);
+  delete[] vec;
+}
+
+template <>
+inline void ClearMatrix<std::vector<double>>(std::vector<double> &vec, const int index, const int maxindex) {
+  vec.clear();
+  return;
 }
 
 } // namespace Util
