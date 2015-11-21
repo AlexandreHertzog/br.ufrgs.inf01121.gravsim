@@ -9,12 +9,10 @@
 #include <wx/string.h>
 
 #include "dialog.hh"
-#include "customDialog.hh"
 
 using std::vector;
 using namespace GravSim;
 using GravSim::Gui::Dialog;
-using GravSim::Gui::CustomDialog;
 
 Gui::Window::Window(const wxString &title)
   : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 600))
@@ -104,7 +102,7 @@ void Gui::Window::UpdateCanvas(void) {
 }
 
 void Gui::Window::OnNew(wxCommandEvent &event) {    
-    CustomDialog custDiag(
+    Dialog custDiag(
         this, _("Nova simulação"), {_("Quantidade de partículas: ")}
         );
     
