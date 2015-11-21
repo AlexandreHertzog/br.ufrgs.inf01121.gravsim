@@ -1,8 +1,5 @@
 Requirements for the implementation:
 * Lists that modify high-order functions and elements.
-* Pattern matching functions (on their definitions).
-  + Could be used in the place of delegates. In that case, there could be a compiling flag that selects which one will be used on the simulation.
-* Recursion as iteration.
 * Delegates.
   + Delegates can be used upon particle force evaluation. If a particle has electricfield(), call it. Otherwhise, don't.
 
@@ -21,4 +18,6 @@ SOLVED:
 * Lambda functions: used to initialize the std::function in particle.hh
 * Currying: used in Particle::GetField()
 * Abstract class: GSObject and Particle are possible abstract classes, because they have pure virtual methods.
-
+* Pattern matching functions (on their definitions).
+  - The ClearMatrix function in util.hh uses pattern matching and recursion.
+* Recursion as iteration.
