@@ -70,7 +70,6 @@ size_t Storage::SaveParticlesToFile(const string filename) {
     outfile << p->GetX() << " ";
     outfile << p->GetY() << " ";
     outfile << p->GetSize() << " ";
-    outfile << p->GetMass() << " ";
     outfile << std::endl;
     count++;
   }
@@ -118,7 +117,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     
     shared_ptr<Particle> p;
     try {
-      p = shared_ptr<Particle>(new Particle(position, 10, fromfile[3], velocity, 20));
+        p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       throw BadFileLoad(*this, filename);
     }
@@ -151,10 +150,10 @@ void Storage::GenerateRandom(const size_t num_particles, int p_type) throw(BadNe
 
     try {
         if (p_type == 0) {
-            p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity, 0));
+            p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
         }
         if (p_type == 1) {
-            p = shared_ptr<Particle>(new Particle(position, 10, 100, velocity,  10));
+            p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
         }
     } catch (...) {
       string message = "Creating index = ";
