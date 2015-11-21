@@ -24,18 +24,18 @@ public:
   Storage(const std::string filename = "default.gsim", const int num_particles = 50);
   ~Storage(void);
 
-  std::shared_ptr<GravSim::Assets::Particle> GetParticle(const size_t index) const throw(
-    GravSim::Exception::BadIndex
-  );
-  std::shared_ptr<GravSim::Gui::Point> GetPoint(const size_t index) const throw(
-    GravSim::Exception::BadIndex 
-  );
+  std::shared_ptr<GravSim::Assets::Particle> GetParticle(const size_t index) const 
+    throw(GravSim::Exception::BadIndex);
+  std::shared_ptr<GravSim::Gui::Point> GetPoint(const size_t index) const
+    throw(GravSim::Exception::BadIndex);
   void AppendParticle(std::shared_ptr<GravSim::Assets::Particle> particle);
   const size_t GetNumParticles(void) const;
+  void ClearParticles(void);
 
   size_t SaveParticlesToFile(const std::string filename = "");
+
   size_t LoadParticlesFromFile(const std::string filename = "") throw(GravSim::Exception::BadFileLoad);
-    void GenerateRandom(const size_t num_particles, int p_type) throw(GravSim::Exception::BadNewFile);
+  void GenerateRandom(const size_t num_particles, int p_type) throw(GravSim::Exception::BadNewFile);
 
   std::string GetFilename(void) const;
 

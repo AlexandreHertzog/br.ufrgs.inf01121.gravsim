@@ -12,26 +12,22 @@
 #include <GL/gl.h>
 #endif
 
+using std::vector;
+
 using namespace GravSim::Gui;
 // TODO: change all constants after the NUM_DIMENTIONS constant changes place.
 // testing: separated float values for r g b 
-Point::Point(const double x, const double y, const size_t size) {
-  SetPosition(x, y);
+Point::Point(const vector<double> pos, const size_t size, const vector<float> color)
+  : _color(color)
+{
+  SetPosition(pos);
   _size = size;
 }
 
-Point::Point(const vector<double> position, const size_t size) {
-  SetPosition(position);
-  _size = size;
-}
-
-Point::~Point(void) {
-}
-
-void Point::Draw(float _r, float _g, float _b) {
+void Point::Draw(void) {
   glPointSize(_size);
   glBegin(GL_POINTS);
-  glColor3f(_r, _g, _b);
+    glColor3f(_color[0], _color[1], _color[2]);
     glVertex3f(_position[0], _position[1], 0);
   glEnd();
 }
@@ -55,16 +51,6 @@ double Point::GetY(void) const {
 
 size_t Point::GetSize(void) const {
   return _size;
-}
-
-double Point::SquareOfDistance(const std::vector<double> point) {
-  // Square of first term...
-  double distx = (_position[0] - point[0]);
-  distx *= distx;
-  // Square of second term
-  double disty = (_position[1] - point[1]);
-  disty *= disty;
-  return distx + disty;
 }
 
 void Point::SetPosition(const double x, const double y) {

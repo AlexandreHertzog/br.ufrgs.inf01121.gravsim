@@ -11,6 +11,7 @@
 #include "dialog.hh"
 #include "customDialog.hh"
 
+using std::vector;
 using namespace GravSim;
 using GravSim::Gui::Dialog;
 using GravSim::Gui::CustomDialog;

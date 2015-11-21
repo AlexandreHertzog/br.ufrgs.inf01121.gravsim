@@ -13,7 +13,7 @@ namespace GravSim {
 namespace Engine {
 
 // TODO: parametrize this.
-const long SPEEDFACTOR = 1e9;
+const long SPEEDFACTOR = 1;
 const double UPDATEFREQ = 1000/60;
 
 class Runner : public GravSim::Gui::Window, public GSObject {
@@ -44,12 +44,19 @@ protected:
 
 private:
   void StepSimulation(void);
+  void StopThread(void);
+  void StartThread(void);
 
   std::shared_ptr<GravSim::Engine::Storage> _storage;
 
   // Thread related stuff.
   std::unique_ptr<std::thread> _exec;
   bool _isrunning;
+
+  // Results and helper functions.
+  std::vector<std::vector<std::vector<double>>> _results;
+  void ClearResults(void);
+  void InitResults(const int numparticles);
 
   Phase _simphase;
 }; // class Runner

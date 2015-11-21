@@ -29,7 +29,7 @@ Dialog::Dialog(
     for (int i = 0; i < fieldnames.size(); i++) {
       texts.push_back(new wxStaticText(this, ID_UNUSED, fieldnames[i]));
       _inputfields.push_back(new wxTextCtrl(
-          this, ID_INPUT, _("50"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER
+          this, ID_INPUT, _("10"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER
       ));
     }
 

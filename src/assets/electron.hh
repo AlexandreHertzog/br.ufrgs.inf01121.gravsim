@@ -1,15 +1,30 @@
-#include "gravitron.hh"
+#ifndef _ELECTRON_H_
+#define _ELECTRON_H_
+
+#include "particle.hh"
 
 namespace GravSim {
 namespace Assets {
-class Electron {
+
+//const double ECONSTANT = 8.9875517873681764e9;
+const double ECONSTANT = 1.0;
+
+class Electron : public Particle {
 public:
-  Electron(const double charge);
-  ~Electron(void);
+  Electron(
+    const std::vector<double> position, const size_t size,
+    const std::vector<float> color, const std::vector<double> velocity,
+    const double charge
+  );
   
-  const double GetCharge(void) const;
+  double GetValue(void) const;
+  std::function<double(double, std::vector<double>)> GetField(void) const;
+  void ApplyForce(const std::vector<double> force);
 private:
-  double _charge;
-}; // class ChargeParticle
-}; // namespace Assets
-}; // namespace GravSim
+  const double _charge;
+}; // class Electron
+
+} // namespace Assets
+} // namespace GravSim
+
+#endif

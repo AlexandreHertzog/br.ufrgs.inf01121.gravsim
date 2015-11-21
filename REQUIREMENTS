@@ -1,14 +1,5 @@
 Requirements for the implementation:
-* Hereditage.
-  - At least one abstract class, that must be implemented in derived classes.
-* Parametric polimorfism: templates.
-* Functions as first order elements and High-Order functions.
-  + A particle could return a function that says is gravitational field without the next particle effect on it yet.
 * Lists that modify high-order functions and elements.
-* Lambda functions.
-  + The main calculations of forces can be done by lambda functions.
-* Currying.
-  + We could create a general log message function and 'curry' it to generate errors, warnings, infos...
 * Pattern matching functions (on their definitions).
   + Could be used in the place of delegates. In that case, there could be a compiling flag that selects which one will be used on the simulation.
 * Recursion as iteration.
@@ -25,3 +16,9 @@ SOLVED:
   - Three levels: the electric particle is the third level.
   - Inclusion polimorphism: the Storage class has vector<Point>, and it receives Particles, Electrics...
 * Overload Polimorphism: In Particle.
+* Parametric Polimorphism: in util.hh
+* Functions as first order elements and High-Order functions: in util.hh
+* Lambda functions: used to initialize the std::function in particle.hh
+* Currying: used in Particle::GetField()
+* Abstract class: GSObject and Particle are possible abstract classes, because they have pure virtual methods.
+

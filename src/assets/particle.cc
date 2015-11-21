@@ -1,31 +1,21 @@
 #include "particle.hh"
 
+using std::vector;
+
 using namespace GravSim::Assets;
+using GravSim::Util::ApplyToAll;
 
 Particle::Particle(
-  const vector<double> position, const size_t size,
-  const double mass, const vector<double> velocity,
-  const double charge
+  const vector<double> position, const size_t size, const vector<float> color,
+  const vector<double> velocity
 )
-  : Gravitron(position, size, mass, velocity), Electron(charge)
+  : Point(position, size, color)
 {
+  _velocity = velocity;
 }
 
-Particle::Particle(
-    const vector<double> position, const size_t size,
-    const double mass, const vector<double> velocity
-)
-  : Gravitron(position, size, mass, velocity), Electron(0)
-{
+vector<double> Particle::GetVelocity(void) {
+  return _velocity;
 }
 
-Particle::Particle(
-    const vector<double> position, const size_t size,
-    const double charge
-)
-  : Gravitron(position, size, 0, {0}), Electron(charge)
-{
-}
 
-Particle::~Particle(void) {
-}

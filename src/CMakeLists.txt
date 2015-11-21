@@ -10,6 +10,12 @@ find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 set(LIBS ${LIBS} ${wxWidgets_LIBRARIES})
 
+find_package(OpenMP)
+if (OPENMP_FOUND)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(_OPENMP_ENABLED_)
+endif()
+
 # CMake-to-code configuration file
 configure_file(
   "${PROJECT_SOURCE_DIR}/cmake_defines.hh.in"
