@@ -53,7 +53,7 @@ Dialog::Dialog(
     vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
-  SetSize(wxSize(500, 150*fieldnames.size() + 80));
+  SetSize(wxSize(500, 80*fieldnames.size() + 160));
 
   Center();
 }
