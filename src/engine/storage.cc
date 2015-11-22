@@ -81,7 +81,7 @@ size_t Storage::SaveParticlesToFile(const string filename) {
 size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) {
   if (filename != "") {
     _filename = filename;
-   }
+  }
   std::ifstream infile(_filename);
   // First, check if file exists.
   if (!infile.good()) {
@@ -117,10 +117,11 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     
     shared_ptr<Particle> p;
     try {
-      p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
+        p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       throw BadFileLoad(*this, filename);
     }
+    
     AppendParticle(p);
   }
   Logger::LogInfo(*this, "Loaded points from file.");
@@ -128,7 +129,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
   return _particles.size();
 }
 
-void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
+void Storage::GenerateRandom(const size_t num_particles, int p_type) throw(BadNewFile) {
   Logger::LogInfo(*this, "Generating new points.");
   _particles.clear();
   std::random_device dev;
@@ -148,8 +149,12 @@ void Storage::GenerateRandom(const size_t num_particles) throw(BadNewFile) {
     };
 
     try {
-      p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
-      //p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
+        if (p_type == 0) {
+            p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
+        }
+        if (p_type == 1) {
+            p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
+        }
     } catch (...) {
       string message = "Creating index = ";
       message += i;

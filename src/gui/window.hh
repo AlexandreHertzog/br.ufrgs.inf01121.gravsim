@@ -18,12 +18,12 @@ public:
   ~Window(void);
   void SetCanvas(std::unique_ptr<Canvas> canvas);
   void UpdateCanvas(void);
-
+    wxCheckBox *m_cb;
 protected:
   // These functions must come from the Storage class.
   virtual void SaveParticlesToFile(const std::string filename = "") = 0;
   virtual void LoadParticlesFromFile(const std::string filename = "") = 0;
-  virtual void GenerateRandom(const size_t numparticles) = 0;
+  virtual void GenerateRandom(const size_t numparticles, int p_type) = 0;
   virtual const std::string GetFilename(void) = 0;
   virtual void AddParticle(const std::vector<double> params) = 0;
   
@@ -31,6 +31,7 @@ protected:
   virtual void OnResume(wxCommandEvent &event) = 0;
   virtual void OnStop(wxCommandEvent &event) = 0;
   virtual void OnStep(wxCommandEvent &event) = 0;
+  
 
 private:
   enum {
@@ -47,7 +48,8 @@ private:
   void OnSave(wxCommandEvent &event);
   void OnSaveAs(wxCommandEvent &event);
   void OnOpen(wxCommandEvent &event);
-  
+    
+    
   void OnAddParticle(wxCommandEvent &event);
   
   // Internal variables.

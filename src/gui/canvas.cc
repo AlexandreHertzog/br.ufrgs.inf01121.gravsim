@@ -61,15 +61,13 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   PrepareViewport(GetSize().x, GetSize().y);
   glLoadIdentity();
-
   for (size_t i = 0; i < _storage->GetNumParticles(); i++) {
     try {
       _storage->GetPoint(i)->Draw();
     } catch (const BadIndex badindex) {
-      break;
+        break;
     }
   }
-  
   glFlush();
   SwapBuffers();
 }
