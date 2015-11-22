@@ -123,6 +123,9 @@ void Runner::AddParticle(const vector<double> params) {
 
   shared_ptr<Particle> part(new Gravitron({posx, posy}, size, {1.0, 1.0, 1.0}, {0.0, 0.0}, mass));
   _storage->AppendParticle(part);
+  ClearMatrix(_resultmatrix, 0, _partcount);
+  _partcount = _storage->GetNumParticles();
+  InitResults();
 }
 
 void Runner::OnPause(wxCommandEvent &WXUNUSED(event)) {
