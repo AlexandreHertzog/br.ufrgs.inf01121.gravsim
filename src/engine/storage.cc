@@ -117,7 +117,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
     
     shared_ptr<Particle> p;
     try {
-        p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
+      p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
     } catch (...) {
       throw BadFileLoad(*this, filename);
     }
@@ -129,7 +129,7 @@ size_t Storage::LoadParticlesFromFile(const string filename) throw(BadFileLoad) 
   return _particles.size();
 }
 
-void Storage::GenerateRandom(const size_t num_particles, int p_type) throw(BadNewFile) {
+void Storage::GenerateRandom(const size_t num_particles, const int type) throw(BadNewFile) {
   Logger::LogInfo(*this, "Generating new points.");
   _particles.clear();
   std::random_device dev;
@@ -142,19 +142,35 @@ void Storage::GenerateRandom(const size_t num_particles, int p_type) throw(BadNe
     const vector<double> position = {position_random(gen), position_random(gen)};
     const size_t size = 10;
     const vector<double> velocity = {velocity_random(gen), velocity_random(gen)};
-    const double mass = i % 2 == 0 ? 100.0 : -100;
-    //const double mass = 100.0;
-    const vector<float> color = {
-      0.0, mass == 100.0 ? 1.0 : 0.0, mass == 100.0 ? 0.0 : 1.0
-    };
+    double mass;
+      if (type == 0) {
+        mass = 100.0;
+      } else {
+        mass = 0.0;
+      }
+    double charge;
+      if (type == 1) {
+        charge = i%2 ? 100.0 : -100.0;
+      } else {
+        charge = 0;
+      }
+    vector<float> color;
+    if (type == 0) {
+      color = {0.0, 1.0, 0.0};
+    } else {
+      if (charge > 0) {
+        color = {0.0, 1.0, 0.0};
+      } else {
+        color = {0.0, 0.0, 1.0};
+      }
+    }
 
     try {
-        if (p_type == 0) {
-            p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
-        }
-        if (p_type == 1) {
-            p = shared_ptr<Particle>(new Electron(position, size, color, velocity, mass));
-        }
+      if (type == 0) {
+        p = shared_ptr<Particle>(new Gravitron(position, size, color, velocity, mass));
+      } else if (type == 1) {
+        p = shared_ptr<Particle>(new Electron(position, size, color, velocity, charge));
+      }
     } catch (...) {
       string message = "Creating index = ";
       message += i;

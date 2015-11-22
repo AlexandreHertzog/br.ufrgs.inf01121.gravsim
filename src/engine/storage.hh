@@ -33,9 +33,10 @@ public:
   void ClearParticles(void);
 
   size_t SaveParticlesToFile(const std::string filename = "");
-
-  size_t LoadParticlesFromFile(const std::string filename = "") throw(GravSim::Exception::BadFileLoad);
-  void GenerateRandom(const size_t num_particles, int p_type) throw(GravSim::Exception::BadNewFile);
+  size_t LoadParticlesFromFile(const std::string filename = "")
+    throw(GravSim::Exception::BadFileLoad);
+  void GenerateRandom(const size_t num_particles, const int type)
+    throw(GravSim::Exception::BadNewFile);
 
   std::string GetFilename(void) const;
 
