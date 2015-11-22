@@ -101,14 +101,19 @@ void Gui::Window::UpdateCanvas(void) {
   }
 }
 
-void Gui::Window::OnNew(wxCommandEvent &WXUNUSED(event)) {
+void Gui::Window::OnNew(wxCommandEvent &event) {    
   Dialog numparticlesdialog(
     this, _("Nova simulação"), {_("Quantidade de partículas: ")}
   );
+  
   if (numparticlesdialog.ShowModal() == wxID_OK) {
     const int numparts = numparticlesdialog.GetIntInputs()[0];
     if (numparts > 0) {
-      GenerateRandom(numparts);
+      if (numparticlesdialog.IsGravChecked()) {
+        GenerateRandom(numparts, 0);
+      } else if (numparticlesdialog.IsElecChecked()) {
+        GenerateRandom(numparts, 1);
+      }
     }
   }
   if (_canvas) {
@@ -165,7 +170,7 @@ void Gui::Window::OnQuit(wxCommandEvent & WXUNUSED(event)) {
 
 void Gui::Window::OnAddParticle(wxCommandEvent &WXUNUSED(event)) {
   Dialog addpartdialog(
-    this, _("Adicionar partícula"), {_("Massa: "), _("Posição x:"), _("Posição y: ")}
+    this, _("Adicionar partícula"), {_("Valor: "), _("Posicao x:"), _("Posicao y: ")}
   );
   if (addpartdialog.ShowModal() == wxID_OK) {
     vector<double> params = addpartdialog.GetDoubleInputs();

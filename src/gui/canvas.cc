@@ -69,7 +69,7 @@ void Canvas::OnRender(wxPaintEvent &WXUNUSED(event)) {
       break;
     }
   }
-  
+
   glFlush();
   SwapBuffers();
 }

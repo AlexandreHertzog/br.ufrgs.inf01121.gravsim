@@ -94,12 +94,12 @@ void Runner::LoadParticlesFromFile(const std::string filename) {
   }
 }
 
-void Runner::GenerateRandom(const size_t numparticles) {
+void Runner::GenerateRandom(const size_t numparticles, const int type) {
   try {
     StopThread();
     ClearMatrix(_resultmatrix, 0, _partcount);
     _partcount = numparticles;
-    _storage->GenerateRandom(_partcount);
+    _storage->GenerateRandom(numparticles, type);
     InitResults();
     StartThread();
   } catch (const BadNewFile badnew) {
@@ -123,6 +123,9 @@ void Runner::AddParticle(const vector<double> params) {
 
   shared_ptr<Particle> part(new Gravitron({posx, posy}, size, {1.0, 1.0, 1.0}, {0.0, 0.0}, mass));
   _storage->AppendParticle(part);
+  ClearMatrix(_resultmatrix, 0, _partcount);
+  _partcount = _storage->GetNumParticles();
+  InitResults();
 }
 
 void Runner::OnPause(wxCommandEvent &WXUNUSED(event)) {

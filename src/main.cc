@@ -11,7 +11,6 @@
 IMPLEMENT_APP(GravSimApp)
 
 bool GravSimApp::OnInit(void) {
-	
   GravSim::Engine::Runner *win = new GravSim::Engine::Runner(wxT(
     "Simulador Gravitacional"
   ));

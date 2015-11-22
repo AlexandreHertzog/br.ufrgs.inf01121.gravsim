@@ -33,7 +33,7 @@ protected:
   // Functions from Window.
   void SaveParticlesToFile(const std::string filename = "");
   void LoadParticlesFromFile(const std::string filename = "");
-  void GenerateRandom(const size_t numparticles);
+  void GenerateRandom(const size_t numparticles, const int type);
   const std::string GetFilename(void);
   void AddParticle(const std::vector<double> params);
 

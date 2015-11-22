@@ -19,10 +19,19 @@ using std::vector;
 Dialog::Dialog(
   wxWindow *parent, const wxString &title, const vector<wxString> fieldnames
 )
-  : wxDialog(parent, -1, title)
+    : wxDialog(parent, -1, title)
 {
+  wxPanel* panel = new wxPanel(this, wxID_ANY);
+    
+  const wxString choices[] = {_("Gravitacional"), _("Elétrica")};
+  _typeradio = new wxRadioBox(
+    this, ID_GRAV, _("Tipo de partícula"), wxDefaultPosition, wxDefaultSize, 2, choices
+  );
+  _typeradio->SetSelection(0);
+    
   wxButton *okbutton = new wxButton(this, wxID_OK, wxT("Ok"), wxDefaultPosition, wxSize(70, 30));
   wxButton *cancelbutton = new wxButton(this, wxID_CANCEL, wxT("Cancelar"), wxDefaultPosition, wxSize(70, 30));
+
   vector<wxStaticText*> texts;
     for (int i = 0; i < fieldnames.size(); i++) {
       texts.push_back(new wxStaticText(this, ID_UNUSED, fieldnames[i]));
@@ -39,11 +48,14 @@ Dialog::Dialog(
       vbox->Add(texts[i], flags);
       vbox->Add(_inputfields[i], flags);
     }
+    vbox->Add(_typeradio, flags);
     vbox->Add(okbutton, flags);
     vbox->Add(cancelbutton, flags);
         
   SetSizer(vbox);
-  SetSize(wxSize(300, 70*fieldnames.size() + 90));
+  SetSize(wxSize(500, 150*fieldnames.size() + 80));
+
+  Center();
 }
 
 int Dialog::ShowModal(void) {
@@ -61,6 +73,20 @@ vector<int> Dialog::GetIntInputs(void) {
 
 vector<double> Dialog::GetDoubleInputs(void) {
   return _converteddoubles;
+}
+
+bool Dialog::IsElecChecked(void) const {
+  if (_typeradio->GetSelection() == 1) {
+    return true;
+  }
+  return false;
+}
+
+bool Dialog::IsGravChecked(void) const {
+  if(_typeradio->GetSelection() == 0) {
+    return true;
+  }
+  return false;
 }
 
 void Dialog::OnOk(void) {
@@ -90,3 +116,4 @@ void Dialog::OnCancel(void) {
   _dialogreturn = 0;
   Close();
 }
+
