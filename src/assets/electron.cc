@@ -23,7 +23,7 @@ double Electron::GetValue(void) const {
 
 std::function<double(double, vector<double>)> Electron::GetField(void) const {
   const double charge = _charge;
-  const std::vector<double> pos = _position;
+  const std::vector<double> pos = GetPosition();
   const auto forcefun = FORCE;
   const double constant = ECONSTANT;
 
@@ -41,5 +41,5 @@ void Electron::ApplyForce(const vector<double> force) {
   };
   // velocity = accel * time, time = 1/1000
   ApplyToAll(_velocity, [&](size_t i) {_velocity[i] += accel[i]/1000;});
-  ApplyToAll(_position, [&](size_t i) {_position[i] += _velocity[i];}); 
+  IncrementPosition(_velocity);
 }

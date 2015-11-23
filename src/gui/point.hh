@@ -18,12 +18,12 @@ public:
   size_t GetSize(void) const;
 
 protected:
-  std::vector<double> _position;
   void SetPosition(const double x, const double y);
   void SetPosition(const std::vector<double> position);
   void IncrementPosition(const double x, const double y);
   void IncrementPosition(const std::vector<double> position);
 private:
+  std::vector<double> _position;
   size_t _size;
   const std::vector<float> _color;
   
